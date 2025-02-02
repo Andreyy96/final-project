@@ -43,5 +43,6 @@ export interface IOrderResponse{
 export interface IOrderListResponse {
     data: IOrderResponse[];
     total: number;
+    limit: number;
     page: number;
 }

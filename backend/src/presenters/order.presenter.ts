@@ -28,13 +28,14 @@ class OrderPresenter {
     public toListResDto(
         entities: IOrder[],
         total: number,
+        limit: number,
         query: IQuery,
     ): IOrderListResponse {
         return {
             data: entities.map(this.toPublicResDto),
             page: query.page ? +query.page : 1,
             total,
-
+            limit
         };
     }
 }

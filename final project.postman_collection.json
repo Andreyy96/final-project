@@ -10,51 +10,6 @@
 			"name": "auth",
 			"item": [
 				{
-					"name": "sign-up",
-					"event": [
-						{
-							"listen": "test",
-							"script": {
-								"exec": [
-									"const body = JSON.parse(responseBody);\r",
-									"\r",
-									"pm.environment.set(\"accessToken\", body.tokens.accessToken)\r",
-									"pm.environment.set(\"refreshToken\", body.tokens.refreshToken)"
-								],
-								"type": "text/javascript",
-								"packages": {}
-							}
-						}
-					],
-					"request": {
-						"auth": {
-							"type": "noauth"
-						},
-						"method": "POST",
-						"header": [],
-						"body": {
-							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"admin\",\r\n    \"surname\": \"admin\",\r\n    \"email\": \"admin@gmail.com\",\r\n    \"password\": \"admin\"\r\n}",
-							"options": {
-								"raw": {
-									"language": "json"
-								}
-							}
-						},
-						"url": {
-							"raw": "{{host}}/auth/sign-up",
-							"host": [
-								"{{host}}"
-							],
-							"path": [
-								"auth",
-								"sign-up"
-							]
-						}
-					},
-					"response": []
-				},
-				{
 					"name": "sign-in",
 					"event": [
 						{

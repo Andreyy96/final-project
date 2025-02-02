@@ -8,12 +8,12 @@ class OrderService {
 
 
         if (query.order) {
-            const [entities, total] = await orderRepository.getListByOrder(query);
-            return orderPresenter.toListResDto(entities, total, query)
+            const [entities, total, limit] = await orderRepository.getListByOrder(query);
+            return orderPresenter.toListResDto(entities, total, limit, query)
         }
         else {
-            const [entities, total] = await orderRepository.getList(query);
-            return orderPresenter.toListResDto(entities, total, query)
+            const [entities, total, limit] = await orderRepository.getList(query);
+            return orderPresenter.toListResDto(entities, total, limit, query)
         }
 
     }

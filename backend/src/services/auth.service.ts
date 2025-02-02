@@ -1,42 +1,15 @@
 import {ITokenPair, ITokenPayload} from "../interfaces/token.interface";
 
-import {ISignIn, ISignUp} from "../interfaces/auth.interface";
+import {ISignIn} from "../interfaces/auth.interface";
 import {IUser} from "../interfaces/user.interface";
 import {userRepository} from "../repositories/user.repository";
 import {ApiError} from "../errors/api-error";
 import {accessTokenRepository} from "../repositories/access-token.repository";
 import {refreshTokenRepository} from "../repositories/refresh-token.repository";
 import {tokenService} from "./token.service";
-import {UserRoleEnum} from "../enums/user-role.enum";
 import {passwordService} from "./password.service";
 
 class AuthService {
-
-    public async signUp(
-        dto: ISignUp,
-    ): Promise<{ user: IUser; tokens: ITokenPair }> {
-
-        const password = await passwordService.hashPassword(dto.password);
-
-        const user = await userRepository.create({
-            name: dto.name,
-            surname: dto.surname,
-            email: dto.email,
-            password,
-            role: UserRoleEnum.ADMIN,
-            is_active: true,
-            last_login: new Date()
-        })
-
-        const tokens = tokenService.generateTokens({
-            userId: user._id,
-            role: user.role,
-        });
-
-        await this.createTokens(user._id, tokens)
-
-        return { user, tokens };
-    }
 
     public async signIn(
         dto: ISignIn,

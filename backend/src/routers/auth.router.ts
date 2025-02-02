@@ -9,12 +9,6 @@ import {authMiddleware} from "../middlewares/aurh.middleware";
 const router = Router();
 
 router.post(
-    "/sign-up",
-    commonMiddleware.isBodyValid(AuthValidator.schemaForCreateUser),
-    authController.signUp,
-);
-
-router.post(
     "/sign-in",
     commonMiddleware.isBodyValid(AuthValidator.schemaForLogin),
     authController.signIn,

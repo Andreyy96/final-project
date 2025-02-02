@@ -1,6 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
-import {orderService} from "../services/orderService";
+import {orderService} from "../services/order.service";
 import {IQuery} from "../interfaces/query.interface";
 
 class OrderController {

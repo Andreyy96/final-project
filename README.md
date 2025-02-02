@@ -22,8 +22,7 @@ $ npm install
 
 ## Env File
 
-- create .env in main folder project,
-- copy and fill environment variables from .env.example
+- all configurations are in the main folder in the .env file
 
 ## Problems
 

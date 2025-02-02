@@ -4,7 +4,7 @@ import {IOrder} from "../interfaces/order.interface";
 import {IQuery} from "../interfaces/query.interface";
 
 class OrderRepository {
-    public async getList(query: IQuery): Promise<[IOrder[], number]> {
+    public async getList(query: IQuery): Promise<[IOrder[], number, number]> {
 
         const page = query.page ? query.page : 1
 
@@ -22,11 +22,12 @@ class OrderRepository {
                 },
                 { $skip: skip },
             ]).limit(25),
-            Order.countDocuments()
+            Order.countDocuments(),
+            25
         ])
     }
 
-    public async getListByOrder(query: IQuery): Promise<[IOrder[], number]> {
+    public async getListByOrder(query: IQuery): Promise<[IOrder[], number, number]> {
         let sortObj: Record<string, 1 | -1>;
 
         const page = query.page ? query.page : 1
@@ -129,7 +130,8 @@ class OrderRepository {
                { $skip: skip },
 
            ]).limit(25),
-           Order.countDocuments()
+           Order.countDocuments(),
+           25
        ])
     }
 
