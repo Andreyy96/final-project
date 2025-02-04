@@ -176,7 +176,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/orders?order=-age&page=1",
+							"raw": "{{host}}/orders?order=-manager&page=1",
 							"host": [
 								"{{host}}"
 							],
@@ -186,11 +186,58 @@
 							"query": [
 								{
 									"key": "order",
-									"value": "-age"
+									"value": "-manager"
 								},
 								{
 									"key": "page",
 									"value": "1"
+								}
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "comments",
+			"item": [
+				{
+					"name": "create comment",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"body\": \"some text\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/comments?id=6790ef8531a6e1371c6517f5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"comments"
+							],
+							"query": [
+								{
+									"key": "id",
+									"value": "6790ef8531a6e1371c6517f5"
 								}
 							]
 						}

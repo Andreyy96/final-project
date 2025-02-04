@@ -15,8 +15,16 @@ class OrderService {
             const [entities, total, limit] = await orderRepository.getList(query);
             return orderPresenter.toListResDto(entities, total, limit, query)
         }
-
     }
+
+    public async updateStatusAndManagerById(id: string, userId: string, name: string): Promise<void> {
+        const order = await orderRepository.getById(id)
+
+        if (!order.status || order.status === "New") {
+            await orderRepository.updateStatusAndManagerById(id, userId, name)
+        }
+    }
+
 }
 
 export const orderService = new OrderService();

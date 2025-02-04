@@ -25,4 +25,6 @@ export enum ListOrderByEnum {
     _UTM = "-utm",
     STATUS = "status",
     _STATUS = "-status",
+    MANAGER = "manager",
+    _MANAGER = "-manager",
 }

@@ -19,7 +19,8 @@ const orderSchema = new Schema(
         msg: { type: String },
         status: { type: String },
         group: { type: String },
-        _userId: { type: Schema.Types.ObjectId, required: false, ref: User }
+        manager: { type: String },
+        _userId: { type: Schema.Types.ObjectId, required: false, ref: User },
     },
     {
         versionKey: false,

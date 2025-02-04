@@ -1,6 +1,7 @@
 import {IOrder, IOrderListResponse, IOrderResponse} from "../interfaces/order.interface";
 import {IQuery} from "../interfaces/query.interface";
 import {userPresenter} from "./user.presenter";
+import {commentPresenter} from "./comment.presenter";
 
 class OrderPresenter {
     toPublicResDto(entity: IOrder): IOrderResponse {
@@ -21,7 +22,9 @@ class OrderPresenter {
             msg: entity.msg,
             utm: entity.utm,
             created_at: entity.created_at,
-            manager: entity.manager.length <= 0 ? null : userPresenter.toPublicResDto(entity.manager[0]),
+            manager: entity.manager ? entity.manager : null,
+            manager_info: entity.manager_info.length <= 0 ? null : userPresenter.toPublicResDto(entity.manager_info[0]),
+            comments: entity.comments.length <= 0 ? null : entity.comments.map(comment => commentPresenter.toPublicResDto(comment))
         };
     }
 

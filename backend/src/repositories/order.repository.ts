@@ -1,6 +1,6 @@
 import {Order} from "../models/order.model";
 import {ListOrderByEnum} from "../enums/orderBy.enum";
-import {IOrder} from "../interfaces/order.interface";
+import {IOrder, ISingleOrder} from "../interfaces/order.interface";
 import {IQuery} from "../interfaces/query.interface";
 
 class OrderRepository {
@@ -16,8 +16,16 @@ class OrderRepository {
                     $lookup: {
                         from: "users",
                         let: { userId: "$_userId" },
-                        as: "manager",
+                        as: "manager_info",
                         pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$userId"] } } }],
+                    },
+                },
+                {
+                    $lookup: {
+                        from: "comments",
+                        let: { id: "$_id" },
+                        as: "comments",
+                        pipeline: [{ $match: { $expr: { $eq: ["$_orderId", "$$id"] } } }],
                     },
                 },
                 { $skip: skip },
@@ -111,6 +119,12 @@ class OrderRepository {
                 case ListOrderByEnum._STATUS:
                     sortObj = {status: -1}
                     break
+                case ListOrderByEnum.MANAGER:
+                    sortObj = {manager: 1}
+                    break
+                case ListOrderByEnum._MANAGER:
+                    sortObj = {manager: -1}
+                    break
             }
 
 
@@ -122,8 +136,16 @@ class OrderRepository {
                    $lookup: {
                        from: "users",
                        let: { userId: "$_userId" },
-                       as: "manager",
+                       as: "manager_info",
                        pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$userId"] } } }],
+                   },
+               },
+               {
+                   $lookup: {
+                       from: "comments",
+                       let: { id: "$_id" },
+                       as: "comments",
+                       pipeline: [{ $match: { $expr: { $eq: ["$_orderId", "$$id"] } } }],
                    },
                },
                { $sort: sortObj },
@@ -135,6 +157,14 @@ class OrderRepository {
        ])
     }
 
+
+    public async getById(id: string): Promise<ISingleOrder> {
+        return await Order.findById({_id: id});
+    }
+
+    public async updateStatusAndManagerById(id: string, userId: string, name: string): Promise<void> {
+        await Order.findByIdAndUpdate(id, { manager: name, status: "In work", _userId: userId,});
+    }
 }
 
 export const orderRepository = new OrderRepository();
