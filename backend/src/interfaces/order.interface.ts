@@ -19,8 +19,8 @@ export interface IOrder{
     status: string | null,
     group: string | null,
     manager: string | null
-    manager_info: IUser[] | null
-    comments: IComment[] | null
+    manager_info?: IUser[] | null
+    comments?: IComment[] | null
 }
 
 export interface IOrderResponse{
@@ -64,6 +64,21 @@ export interface ISingleOrder{
     group: string | null,
     _userId: string | null,
     _commentId: string | null
+}
+
+export interface IDTOOrder{
+    name: string
+    surname: string,
+    email: string,
+    phone: string,
+    age: number,
+    course: string,
+    course_format: string,
+    course_type: string,
+    sum: number | null,
+    already_paid: number,
+    status: string,
+    group: string,
 }
 
 export interface IOrderListResponse {

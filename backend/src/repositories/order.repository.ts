@@ -1,6 +1,6 @@
 import {Order} from "../models/order.model";
 import {ListOrderByEnum} from "../enums/orderBy.enum";
-import {IOrder, ISingleOrder} from "../interfaces/order.interface";
+import {IDTOOrder, IOrder, ISingleOrder} from "../interfaces/order.interface";
 import {IQuery} from "../interfaces/query.interface";
 
 class OrderRepository {
@@ -164,6 +164,10 @@ class OrderRepository {
 
     public async updateStatusAndManagerById(id: string, userId: string, name: string): Promise<void> {
         await Order.findByIdAndUpdate(id, { manager: name, status: "In work", _userId: userId,});
+    }
+
+    public async updateById(dto: IDTOOrder, order: ISingleOrder): Promise<ISingleOrder> {
+        return await Order.findByIdAndUpdate(order._id, dto, {new: true});
     }
 }
 

@@ -196,6 +196,43 @@
 						}
 					},
 					"response": []
+				},
+				{
+					"name": "update order by id",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Ggh\",\r\n    \"surname\": \"казакова\",\r\n    \"email\": \"BrianJLHundgr@boxof.biz\",\r\n    \"phone\": \"8(915) 984-9\",\r\n    \"age\": 26,\r\n    \"course\": \"PCX\",\r\n    \"course_format\": \"online\",\r\n    \"course_type\": \"minimal\",\r\n    \"sum\": 4000,\r\n    \"already_paid\": 2000,\r\n    \"group\": \"march-2024\",\r\n    \"status\": \"In work\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/orders/6790ef8531a6e1371c6517f5",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"6790ef8531a6e1371c6517f5"
+							]
+						}
+					},
+					"response": []
 				}
 			]
 		},
@@ -219,7 +256,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"body\": \"some text\"\r\n}",
+							"raw": "{\r\n    \"body\": \"some text2\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -227,18 +264,81 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/comments?id=6790ef8531a6e1371c6517f5",
+							"raw": "{{host}}/comments/6790ef8531a6e1371c6517f6",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
-								"comments"
-							],
-							"query": [
+								"comments",
+								"6790ef8531a6e1371c6517f6"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "groups",
+			"item": [
+				{
+					"name": "get groups",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
 								{
-									"key": "id",
-									"value": "6790ef8531a6e1371c6517f5"
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
 								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/groups",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"groups"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "create group",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"sept-2024\"\r\n}\r\n",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/groups",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"groups"
 							]
 						}
 					},

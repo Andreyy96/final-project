@@ -2,20 +2,14 @@ import { Router } from "express";
 
 import {authMiddleware} from "../middlewares/aurh.middleware";
 import {commentController} from "../controllers/comment.controller";
-import {commentMiddleware} from "../middlewares/comment.middleware";
+import {orderMiddleware} from "../middlewares/order.middleware";
 
 const router = Router();
 
-// router.get(
-//     "/",
-//     authMiddleware.checkAccessToken,
-//     orderController.getList,
-// );
-
 router.post(
-    "/",
+    "/:orderId",
     authMiddleware.checkAccessToken,
-    commentMiddleware.isOrderThisManager,
+    orderMiddleware.isOrderThisManager,
     commentController.createComment,
 );
 

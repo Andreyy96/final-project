@@ -9,13 +9,21 @@
 
 ### Order
 
-Each page displays 25 orders, you can also navigate between pages and sort them in descending and ascending order 
+- Each page displays 25 orders, you can also navigate between pages and sort them in descending and ascending order
 (?order=-name or ?order=name), except for group.
+- Only the manager of this order can change the order details or if there is no manager for this order.
+- Order data fields specified in the form may be sent empty.
+- Before changing a group field, the user must create a group using the create group method.
 
 ### Comment
 
 The user can leave comments under the order only where there is no manager or he himself is the manager of this order, 
 after which his name is entered in the manager column and the status changes to “In work”.
+
+### Group
+
+- any user can get all groups
+- any user can create group (group name must be unique)
 
 ## Installation
 

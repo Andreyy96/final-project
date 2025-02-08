@@ -6,6 +6,7 @@ import { authRouter } from "./routers/auth.router";
 import {configs} from "./configs/config";
 import {orderRouter} from "./routers/order.router";
 import {commentRouter} from "./routers/comment.router";
+import {groupRouter} from "./routers/group.router";
 
 
 const app = express();
@@ -16,6 +17,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use("/auth", authRouter);
 app.use("/orders", orderRouter);
 app.use("/comments", commentRouter);
+app.use("/groups", groupRouter)
 
 app.use(
     "*",
