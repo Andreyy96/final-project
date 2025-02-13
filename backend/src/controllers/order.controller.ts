@@ -9,6 +9,7 @@ class OrderController {
     public async getList(req: Request, res: Response, next: NextFunction) {
         try {
             const query = req.query as unknown as IQuery;
+
             const result = await orderService.getList(query);
             res.json(result);
         } catch (e) {

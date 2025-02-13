@@ -176,7 +176,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/orders?order=-manager&page=1",
+							"raw": "{{host}}/orders?order=created_at&page=1&name=ggh&surname=каз&age=23&email=und&course=PCX&course_format=online&course_type=minimal&manager=admin&end_date=2025-09-12&status=In work",
 							"host": [
 								"{{host}}"
 							],
@@ -186,11 +186,61 @@
 							"query": [
 								{
 									"key": "order",
-									"value": "-manager"
+									"value": "created_at"
 								},
 								{
 									"key": "page",
 									"value": "1"
+								},
+								{
+									"key": "name",
+									"value": "ggh"
+								},
+								{
+									"key": "surname",
+									"value": "каз"
+								},
+								{
+									"key": "age",
+									"value": "23"
+								},
+								{
+									"key": "email",
+									"value": "und"
+								},
+								{
+									"key": "phone",
+									"value": "98",
+									"disabled": true
+								},
+								{
+									"key": "start_date",
+									"value": "2021-05-12",
+									"disabled": true
+								},
+								{
+									"key": "course",
+									"value": "PCX"
+								},
+								{
+									"key": "course_format",
+									"value": "online"
+								},
+								{
+									"key": "course_type",
+									"value": "minimal"
+								},
+								{
+									"key": "manager",
+									"value": "admin"
+								},
+								{
+									"key": "end_date",
+									"value": "2025-09-12"
+								},
+								{
+									"key": "status",
+									"value": "In work"
 								}
 							]
 						}
@@ -214,7 +264,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Ggh\",\r\n    \"surname\": \"казакова\",\r\n    \"email\": \"BrianJLHundgr@boxof.biz\",\r\n    \"phone\": \"8(915) 984-9\",\r\n    \"age\": 26,\r\n    \"course\": \"PCX\",\r\n    \"course_format\": \"online\",\r\n    \"course_type\": \"minimal\",\r\n    \"sum\": 4000,\r\n    \"already_paid\": 2000,\r\n    \"group\": \"march-2024\",\r\n    \"status\": \"In work\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Ggh\",\r\n    \"surname\": \"казакова\",\r\n    \"email\": \"BrianJLHundgr@boxof.biz\",\r\n    \"phone\": \"8(915) 984-9\",\r\n    \"age\": 23,\r\n    \"course\": \"PCX\",\r\n    \"course_format\": \"online\",\r\n    \"course_type\": \"minimal\",\r\n    \"sum\": 4000,\r\n    \"already_paid\": 2000,\r\n    \"group\": \"march-2024\",\r\n    \"status\": \"In work\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"

@@ -14,7 +14,8 @@
 - Only the manager of this order can change the order details or if there is no manager for this order.
 - Order data fields specified in the form may be sent empty.
 - Before changing a group field, the user must create a group using the create group method.
-
+- Filtering by fields is available: first name, last name, age, email address, phone, status, course, course_format,
+course_type, manager, start_date, end_date.
 ### Comment
 
 The user can leave comments under the order only where there is no manager or he himself is the manager of this order, 

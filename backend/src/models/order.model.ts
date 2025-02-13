@@ -15,7 +15,7 @@ const orderSchema = new Schema(
         course_type: { type: String,  },
         sum: { type: Number },
         already_paid: { type: Number },
-        created_at: { type: Date },
+        created_at: { type: String },
         utm: { type: String },
         msg: { type: String },
         status: { type: String, },
