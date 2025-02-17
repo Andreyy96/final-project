@@ -82,7 +82,7 @@ class AuthService {
             token,
         });
 
-        await emailService.sendMail(EmailTypeEnum.ACTIVATE, "taurussilver777@gmail.com", {
+        await emailService.sendMail(EmailTypeEnum.ACTIVATE, user.email, {
             frontUrl:  configs.FRONT_URL,
             actionToken: token
         })
