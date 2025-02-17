@@ -1,6 +1,6 @@
 import { Router } from "express";
 
-import {authMiddleware} from "../middlewares/aurh.middleware";
+import {authMiddleware} from "../middlewares/auth.middleware";
 import {commonMiddleware} from "../middlewares/common.middleware";
 import {GroupValidator} from "../validators/group.validator";
 import {groupMiddleware} from "../middlewares/group.middleware";

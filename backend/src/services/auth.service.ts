@@ -1,13 +1,19 @@
 import {ITokenPair, ITokenPayload} from "../interfaces/token.interface";
 
 import {ISignIn} from "../interfaces/auth.interface";
-import {IUser} from "../interfaces/user.interface";
+import {IDTOUser, IUser} from "../interfaces/user.interface";
 import {userRepository} from "../repositories/user.repository";
 import {ApiError} from "../errors/api-error";
 import {accessTokenRepository} from "../repositories/access-token.repository";
 import {refreshTokenRepository} from "../repositories/refresh-token.repository";
 import {tokenService} from "./token.service";
 import {passwordService} from "./password.service";
+import {UserRoleEnum} from "../enums/user-role.enum";
+import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
+import {actionTokenRepository} from "../repositories/action-token.repository";
+import {emailService} from "./email.service";
+import {EmailTypeEnum} from "../enums/email-type.enum";
+import {configs} from "../configs/config";
 
 class AuthService {
 
@@ -18,6 +24,10 @@ class AuthService {
 
         if (!user) {
             throw new ApiError("User not found", 421);
+        }
+
+        if (!user.password) {
+            throw new ApiError("Manager must activate his profile", 403)
         }
 
         const isPasswordCorrect = await passwordService.comparePassword(dto.password, user.password)
@@ -38,6 +48,66 @@ class AuthService {
 
         return {user: updateUser, tokens};
     }
+
+    public async createManager(
+        dto: IDTOUser,
+    ): Promise<IUser> {
+        await this.isEmailExistOrThrow(dto.email);
+        return await userRepository.create({
+            name: dto.name,
+            surname: dto.surname,
+            email: dto.email,
+            role: UserRoleEnum.MANAGER,
+        });
+    }
+
+    public async activateAccountSendEmail(
+        jwtPayload: ITokenPayload,
+        userId: string
+    ): Promise<void> {
+        const user = await userRepository.getById(userId);
+
+        if (!user) {
+            throw new ApiError("User not found", 404);
+        }
+
+        const token = tokenService.generateActionTokens(
+            { userId: user._id,  role: user.role },
+            ActionTokenTypeEnum.ACTIVATE,
+        );
+
+        await actionTokenRepository.create({
+            type: ActionTokenTypeEnum.ACTIVATE,
+            _userId: user._id,
+            token,
+        });
+
+        await emailService.sendMail(EmailTypeEnum.ACTIVATE, "taurussilver777@gmail.com", {
+            frontUrl:  configs.FRONT_URL,
+            actionToken: token
+        })
+    }
+
+    public async activateAccount(
+        jwtPayload: ITokenPayload,
+        dto: { password: string, confirm_password: string}
+    ): Promise<void> {
+        const password = await passwordService.hashPassword(dto.password);
+        await userRepository.updateById(jwtPayload.userId, { password });
+
+        await actionTokenRepository.deleteByParams({
+            _userId: jwtPayload.userId,
+            type: ActionTokenTypeEnum.ACTIVATE,
+        });
+    }
+
+    private async isEmailExistOrThrow(email: string): Promise<void> {
+        const user = await userRepository.getByEmail(email);
+        if (user) {
+            throw new ApiError("Email already exists", 409);
+        }
+    }
+
 
     public async refresh(
         jwtPayload: ITokenPayload,

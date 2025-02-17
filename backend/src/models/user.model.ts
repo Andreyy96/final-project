@@ -7,10 +7,11 @@ const userSchema = new Schema(
         name: { type: String, required: true },
         surname: { type: String, required: true },
         email: { type: String, required: true, unique: true },
-        password: { type: String, required: true, select: false },
-        role: { type: String, enum: UserRoleEnum, default: UserRoleEnum.ADMIN },
+        password: { type: String, select: false },
+        role: { type: String, enum: UserRoleEnum },
         is_active: { type: Boolean, default: false },
-        last_login: { type: Date, required: true}
+        last_login: { type: String, required: false, default: null},
+        is_banned: { type: Boolean, default: false}
     },
     {
         timestamps: true,

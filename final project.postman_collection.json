@@ -55,6 +55,151 @@
 					"response": []
 				},
 				{
+					"name": "sign-up manager",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"mark@gmail.com\",\r\n    \"name\": \"Mark\",\r\n    \"surname\": \"Mabel\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/sign-up/manager",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"sign-up",
+								"manager"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activate send email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/activate?userId=67b3076a681da78d5f42068d",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"activate"
+							],
+							"query": [
+								{
+									"key": "userId",
+									"value": "67b3076a681da78d5f42068d"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "activate",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"bananana\",\r\n    \"confirm_password\": \"bananana\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/activate/{{actionToken}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"activate",
+								"{{actionToken}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "refresh",
 					"event": [
 						{
@@ -176,7 +321,7 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/orders?order=created_at&page=1&name=ggh&surname=каз&age=23&email=und&course=PCX&course_format=online&course_type=minimal&manager=admin&end_date=2025-09-12&status=In work",
+							"raw": "{{host}}/orders?order=id&page=1&name=ggh&surname=каз&age=24&email=und&phone=98&start_date=2021-05-12&course=PCX&course_format=online&course_type=minimal&manager=manager&end_date=2025-09-12&status=In work",
 							"host": [
 								"{{host}}"
 							],
@@ -186,7 +331,7 @@
 							"query": [
 								{
 									"key": "order",
-									"value": "created_at"
+									"value": "id"
 								},
 								{
 									"key": "page",
@@ -202,7 +347,7 @@
 								},
 								{
 									"key": "age",
-									"value": "23"
+									"value": "24"
 								},
 								{
 									"key": "email",
@@ -210,13 +355,11 @@
 								},
 								{
 									"key": "phone",
-									"value": "98",
-									"disabled": true
+									"value": "98"
 								},
 								{
 									"key": "start_date",
-									"value": "2021-05-12",
-									"disabled": true
+									"value": "2021-05-12"
 								},
 								{
 									"key": "course",
@@ -232,7 +375,7 @@
 								},
 								{
 									"key": "manager",
-									"value": "admin"
+									"value": "manager"
 								},
 								{
 									"key": "end_date",
@@ -264,7 +407,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"Ggh\",\r\n    \"surname\": \"казакова\",\r\n    \"email\": \"BrianJLHundgr@boxof.biz\",\r\n    \"phone\": \"8(915) 984-9\",\r\n    \"age\": 23,\r\n    \"course\": \"PCX\",\r\n    \"course_format\": \"online\",\r\n    \"course_type\": \"minimal\",\r\n    \"sum\": 4000,\r\n    \"already_paid\": 2000,\r\n    \"group\": \"march-2024\",\r\n    \"status\": \"In work\"\r\n}",
+							"raw": "{\r\n    \"name\": \"Макс\",\r\n    \"surname\": \"панькова\",\r\n    \"email\": \"isogamipu@mailforspam.com\",\r\n    \"phone\": \"8(929) 355-76\",\r\n    \"age\": 25,\r\n    \"course\": \"FE\",\r\n    \"course_format\": \"static\",\r\n    \"course_type\": \"premium\",\r\n    \"sum\": null,\r\n    \"already_paid\": null,\r\n    \"group\": null,\r\n    \"status\": \"New\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -272,13 +415,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/orders/6790ef8531a6e1371c6517f5",
+							"raw": "{{host}}/orders/6790ef8531a6e1371c651858",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"orders",
-								"6790ef8531a6e1371c6517f5"
+								"6790ef8531a6e1371c651858"
 							]
 						}
 					},
@@ -306,7 +449,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"body\": \"some text2\"\r\n}",
+							"raw": "{\r\n    \"body\": \"manager text\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -314,13 +457,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/comments/6790ef8531a6e1371c6517f6",
+							"raw": "{{host}}/comments/6790ef8531a6e1371c651858",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"comments",
-								"6790ef8531a6e1371c6517f6"
+								"6790ef8531a6e1371c651858"
 							]
 						}
 					},
@@ -389,6 +532,38 @@
 							],
 							"path": [
 								"groups"
+							]
+						}
+					},
+					"response": []
+				}
+			]
+		},
+		{
+			"name": "users",
+			"item": [
+				{
+					"name": "get managers",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/users",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users"
 							]
 						}
 					},

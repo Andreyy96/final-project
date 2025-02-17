@@ -2,7 +2,7 @@ import {Request, Response, NextFunction} from "express";
 import {authService} from "../services/auth.service";
 import {ISignIn} from "../interfaces/auth.interface";
 import {ITokenPayload} from "../interfaces/token.interface";
-
+import {IDTOUser} from "../interfaces/user.interface";
 
 class AuthController {
 
@@ -10,6 +10,16 @@ class AuthController {
         try {
             const dto = req.body as ISignIn;
             const result = await authService.signIn(dto);
+            res.status(201).json(result);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async createManager(req: Request, res: Response, next: NextFunction) {
+        try {
+            const dto = req.body as IDTOUser;
+            const result = await authService.createManager(dto);
             res.status(201).json(result);
         } catch (e) {
             next(e);
@@ -37,7 +47,29 @@ class AuthController {
         }
     }
 
+    public async activateAccountSendEmail(req: Request, res: Response, next: NextFunction) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+            const userId = req.query.userId as string
 
+            await authService.activateAccountSendEmail(jwtPayload, userId);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async activateAccount(req: Request, res: Response, next: NextFunction) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+            const dto = req.body as { password: string, confirm_password: string}
+
+            await authService.activateAccount(jwtPayload, dto);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export const authController = new AuthController();

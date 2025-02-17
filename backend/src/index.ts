@@ -7,6 +7,7 @@ import {configs} from "./configs/config";
 import {orderRouter} from "./routers/order.router";
 import {commentRouter} from "./routers/comment.router";
 import {groupRouter} from "./routers/group.router";
+import {userRouter} from "./routers/user.router";
 
 
 const app = express();
@@ -18,6 +19,7 @@ app.use("/auth", authRouter);
 app.use("/orders", orderRouter);
 app.use("/comments", commentRouter);
 app.use("/groups", groupRouter)
+app.use("/users", userRouter)
 
 app.use(
     "*",

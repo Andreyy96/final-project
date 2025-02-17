@@ -39,6 +39,22 @@ class CommonMiddleware {
             }
         };
     }
+
+    public isPasswordsEqual() {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                const { password, confirm_password } = req.body as { password: string, confirm_password: string}
+
+                if (password !== confirm_password) {
+                    throw new ApiError("password and confirm_password not equal", 400)
+                }
+
+                next();
+            } catch (e) {
+                next(e);
+            }
+        };
+    }
 }
 
 export const commonMiddleware = new CommonMiddleware();

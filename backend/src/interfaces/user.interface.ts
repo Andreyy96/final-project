@@ -9,4 +9,11 @@ export interface IUser {
     role: UserRoleEnum
     is_active: boolean
     last_login: Date
+    is_banned: boolean
+}
+
+export interface IDTOUser {
+    name: string
+    surname: string
+    email: string
 }
