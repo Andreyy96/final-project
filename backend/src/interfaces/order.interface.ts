@@ -3,6 +3,7 @@ import {IComment} from "./comment.intarface";
 
 export interface IOrder{
     _id: string
+    id: number
     name: string
     surname: string | null,
     email: string | null,
@@ -25,6 +26,7 @@ export interface IOrder{
 
 export interface IOrderResponse{
     _id: string
+    id: number
     name: string
     surname: string | null,
     email: string | null,

@@ -3,9 +3,9 @@ import {ListOrderByEnum} from "../enums/orderBy.enum";
 import {IDTOOrder, IOrder, ISingleOrder} from "../interfaces/order.interface";
 import {IQuery} from "../interfaces/query.interface";
 import {FilterQuery} from "mongoose";
+import {StatusEnum} from "../enums/status.enum";
 
 class OrderRepository {
-
     public async getListNoAggregation(query: IQuery): Promise<[IOrder[], number, number]> {
 
         const page = query.page ? query.page : 1
@@ -134,7 +134,11 @@ class OrderRepository {
     }
 
     public async updateById(dto: IDTOOrder, order: ISingleOrder): Promise<ISingleOrder> {
-        return await Order.findByIdAndUpdate(order._id, dto, {new: true});
+        if (dto.status === StatusEnum.NEW) {
+            return await Order.findByIdAndUpdate(order._id, {...dto, manager: null, _userId: null}, {new: true});
+        } else {
+            return await Order.findByIdAndUpdate(order._id, dto, {new: true});
+        }
     }
 
     private getSortObj(order: string): Record<string, 1 | -1> {
@@ -142,10 +146,10 @@ class OrderRepository {
 
         switch (order) {
             case ListOrderByEnum.ID:
-                sortObj = {_id: 1}
+                sortObj = {id: 1}
                 break
             case ListOrderByEnum._ID:
-                sortObj = {_id: -1}
+                sortObj = {id: -1}
                 break
             case ListOrderByEnum.NAME:
                 sortObj = {name: 1}
@@ -276,9 +280,6 @@ class OrderRepository {
         if(query.manager) {
             filterObj.manager = query.manager
         }
-
-        console.log(filterObj)
-
         return filterObj
     }
 }

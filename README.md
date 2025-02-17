@@ -6,6 +6,8 @@
 - role: Admin or Manager
 - Login, refresh and sign-out can do only admin
 - Using an access token, user can make a request to receive order data.
+- Only admin can create manager
+- Before logging in, the manager must activate his account
 
 ### Order
 
@@ -16,6 +18,8 @@
 - Before changing a group field, the user must create a group using the create group method.
 - Filtering by fields is available: first name, last name, age, email address, phone, status, course, course_format,
 course_type, manager, start_date, end_date.
+- if the order status changes to New then the manager and _userId fields will become null
+
 ### Comment
 
 The user can leave comments under the order only where there is no manager or he himself is the manager of this order, 

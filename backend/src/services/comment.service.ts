@@ -4,11 +4,11 @@ import {commentRepository} from "../repositories/comment.repository";
 import {orderService} from "./order.service";
 import {userRepository} from "../repositories/user.repository";
 import {orderRepository} from "../repositories/order.repository";
+import dayjs from "dayjs";
 
 
 class CommentService {
    public async createComment(dto: ICreateComment, jwtPayload: ITokenPayload, id: string): Promise<IComment> {
-       const date = new Date()
        const user = await userRepository.getById(jwtPayload.userId)
        const order = await orderRepository.getById(id)
 
@@ -16,7 +16,7 @@ class CommentService {
            body: dto.body,
            manager_name: user.name,
            manager_surname: user.surname,
-           date: `${date.toLocaleString("en-GB", { month: 'long' })} ${date.getDate()} ${date.getFullYear()}`,
+           date: dayjs().format('MMMM D, YYYY'),
            _userId: user._id,
            _orderId: order._id
        })

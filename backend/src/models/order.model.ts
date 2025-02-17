@@ -5,7 +5,8 @@ import {User} from "./user.model";
 
 const orderSchema = new Schema(
     {
-        name: { type: String, required: true },
+        id: { type: Number, unique: true },
+        name: { type: String },
         surname: { type: String },
         email: { type: String },
         phone: { type: String },

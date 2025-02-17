@@ -5,6 +5,9 @@ import { ApiError } from "../errors/api-error";
 import { tokenService } from "../services/token.service";
 import {accessTokenRepository} from "../repositories/access-token.repository";
 import {refreshTokenRepository} from "../repositories/refresh-token.repository";
+import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
+import {ITokenPayload} from "../interfaces/token.interface";
+import {actionTokenRepository} from "../repositories/action-token.repository";
 
 class AuthMiddleware {
     public async checkAccessToken(
@@ -69,6 +72,47 @@ class AuthMiddleware {
       } catch (e) {
         next(e);
       }
+    }
+
+    public checkActionToken(type: ActionTokenTypeEnum) {
+        return async (req: Request, res: Response, next: NextFunction) => {
+            try {
+                // const { token } = req.body as Partial<IResetPasswordSet>;
+                const token = req.params.actionToken as string
+
+                if (!token) {
+                    throw new ApiError("Token is not provided", 401);
+                }
+
+                const tokenEntity = await actionTokenRepository.getByToken(token);
+
+                if (!tokenEntity) {
+                    throw new ApiError("Token is not valid", 401);
+                }
+
+                let payload: ITokenPayload;
+
+                switch (type) {
+                    case ActionTokenTypeEnum.ACTIVATE:
+                        payload = tokenService.verifyActionToken(
+                            token,
+                            ActionTokenTypeEnum.ACTIVATE,
+                        );
+                        break;
+                    case ActionTokenTypeEnum.RECOVERY_PASSWORD:
+                        payload = tokenService.verifyActionToken(
+                            token,
+                            ActionTokenTypeEnum.RECOVERY_PASSWORD,
+                        );
+                        break;
+                }
+
+                req.res.locals.jwtPayload = payload;
+                next();
+            } catch (e) {
+                next(e);
+            }
+        };
     }
 }
 export const authMiddleware = new AuthMiddleware();

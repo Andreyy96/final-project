@@ -7,6 +7,7 @@ class OrderPresenter {
     toPublicResDto(entity: IOrder): IOrderResponse {
         return {
             _id: entity._id,
+            id: entity.id,
             name: entity.name,
             surname: entity.surname,
             email: entity.email,
