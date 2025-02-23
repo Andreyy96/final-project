@@ -141,6 +141,17 @@ class OrderRepository {
         }
     }
 
+    public async getStatusStatisticList(): Promise<[number, number, number, number, number, number]> {
+        return await Promise.all([
+            Order.countDocuments(),
+            Order.countDocuments({status: StatusEnum.AGREE}),
+            Order.countDocuments({status: StatusEnum.IN_WORK}),
+            Order.countDocuments({status: StatusEnum.DISAGREE}),
+            Order.countDocuments({status: StatusEnum.DUBBING}),
+            Order.countDocuments({status: StatusEnum.NEW}),
+        ]);
+    }
+
     private getSortObj(order: string): Record<string, 1 | -1> {
         let sortObj: Record<string, 1 | -1>;
 

@@ -31,6 +31,11 @@ class OrderService {
         }
     }
 
+    public async getStatusStatisticList(): Promise<{total: number, agree: number, in_work: number, disagree: number, dubbing:  number, new: number}> {
+        const [Total, Agree, In_work, Disagree, Dubbing, New] = await orderRepository.getStatusStatisticList();
+        return {total:Total, agree: Agree, in_work: In_work, disagree: Disagree,  dubbing: Dubbing, new: New}
+    }
+
     public async updateStatusAndManagerById(id: string, userId: string, name: string): Promise<void> {
         const order = await orderRepository.getById(id)
 

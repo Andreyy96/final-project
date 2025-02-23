@@ -1,13 +1,75 @@
-import {IUser} from "../interfaces/user.interface";
+import {IUser, IUserWithStatistic} from "../interfaces/user.interface";
 import {User} from "../models/user.model";
 import {UserRoleEnum} from "../enums/user-role.enum";
 import dayjs from "dayjs";
+import {StatusEnum} from "../enums/status.enum";
 
 
 
 class UserRepository {
-    public async getManagerList(): Promise<IUser[]> {
-        return await User.find({role: UserRoleEnum.MANAGER}).sort({createdAt: -1})
+    public async getManagerList(): Promise<IUserWithStatistic[]> {
+        return await User.aggregate([
+            {
+                $match: {role: UserRoleEnum.MANAGER}
+            },
+            {
+                $lookup: {
+                    from: "orders",
+                    let: { userId: "$_id" },
+                    as: "total",
+                    pipeline: [{ $match: { $expr: { $eq: ["$_userId", "$$userId"] } } }],
+                }
+            },
+            {
+                $lookup: {
+                    from: "orders",
+                    let: { userId: "$_id" },
+                    as: "in_work",
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+                        { $match: { status: { $eq: StatusEnum.IN_WORK } } },
+                    ],
+                },
+            },
+            {
+                $lookup: {
+                    from: "orders",
+                    let: { userId: "$_id" },
+                    as: "agree",
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+                        { $match: { status: { $eq: StatusEnum.AGREE } } },
+                    ],
+                },
+            },
+            {
+                $lookup: {
+                    from: "orders",
+                    let: { userId: "$_id" },
+                    as: "disagree",
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+                        { $match: { status: { $eq: StatusEnum.DISAGREE } } },
+                    ],
+                },
+            },
+            {
+                $lookup: {
+                    from: "orders",
+                    let: { userId: "$_id" },
+                    as: "dubbing",
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+                        { $match: { status: { $eq: StatusEnum.DUBBING } } },
+                    ],
+                },
+            },
+            {$sort: {createdAt: -1}}
+        ])
+    }
+
+    public async getLustUser(): Promise<IUser[]> {
+        return await User.find({role: UserRoleEnum.MANAGER}).sort({id: -1}).limit(1)
     }
 
     public async create(dto: Partial<IUser>): Promise<IUser> {
@@ -29,6 +91,14 @@ class UserRepository {
 
     public async getByEmail(email: string): Promise<IUser | null> {
         return await User.findOne({ email }).select("+password");
+    }
+
+    public async bannedManagerById(userId: string): Promise<IUser> {
+        return await User.findByIdAndUpdate(userId, {is_banned: true}, { new: true });
+    }
+
+    public async unbannedManagerById(userId: string): Promise<IUser> {
+        return await User.findByIdAndUpdate(userId, {is_banned: false}, { new: true });
     }
 }
 

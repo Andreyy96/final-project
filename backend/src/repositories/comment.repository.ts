@@ -6,10 +6,6 @@ class CommentRepository {
     public async create(dto: Partial<IComment>): Promise<IComment> {
         return await Comment.create(dto)
     }
-
-    // public async getByUserId(id: string): Promise<IComment[]> {
-    //     return await Comment.find({group})
-    // }
 }
 
 

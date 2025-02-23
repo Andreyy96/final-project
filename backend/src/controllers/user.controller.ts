@@ -11,6 +11,26 @@ class UserController {
             next(e);
         }
     }
+
+    public async bannedManagerById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.userId
+            const result = await userService.bannedManagerById(userId);
+            res.json(result);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async unbannedManagerById(req: Request, res: Response, next: NextFunction) {
+        try {
+            const userId = req.params.userId
+            const result = await userService.unbannedManagerById(userId);
+            res.json(result);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export const userController = new UserController();

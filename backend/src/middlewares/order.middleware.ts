@@ -12,7 +12,6 @@ class OrderMiddleware {
         next: NextFunction,
     ) {
         try {
-            // const {id} = req.query as unknown as ICommentQuery;
             const orderId = req.params.orderId
             const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
 

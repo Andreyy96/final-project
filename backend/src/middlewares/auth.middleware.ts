@@ -77,7 +77,6 @@ class AuthMiddleware {
     public checkActionToken(type: ActionTokenTypeEnum) {
         return async (req: Request, res: Response, next: NextFunction) => {
             try {
-                // const { token } = req.body as Partial<IResetPasswordSet>;
                 const token = req.params.actionToken as string
 
                 if (!token) {

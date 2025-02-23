@@ -83,7 +83,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"mark@gmail.com\",\r\n    \"name\": \"Mark\",\r\n    \"surname\": \"Mabel\"\r\n}",
+							"raw": "{\r\n    \"email\": \"test2@gmail.com\",\r\n    \"name\": \"Name\",\r\n    \"surname\": \"Surname\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -141,7 +141,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/auth/activate?userId=67b3076a681da78d5f42068d",
+							"raw": "{{host}}/auth/activate?userId=67b30ef5ec5a5a95ea03ca25",
 							"host": [
 								"{{host}}"
 							],
@@ -152,7 +152,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "67b3076a681da78d5f42068d"
+									"value": "67b30ef5ec5a5a95ea03ca25"
 								}
 							]
 						}
@@ -174,11 +174,11 @@
 						}
 					],
 					"request": {
-						"method": "POST",
+						"method": "PUT",
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"password\": \"bananana\",\r\n    \"confirm_password\": \"bananana\"\r\n}",
+							"raw": "{\r\n    \"password\": \"azxcvb34\",\r\n    \"confirm_password\": \"azxcvb34\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -193,6 +193,95 @@
 							"path": [
 								"auth",
 								"activate",
+								"{{actionToken}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "recovery password send email",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"email\": \"some@gmail.com\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/recovery-password",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"recovery-password"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "recovery password",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"password\": \"asdfghjk\",\r\n    \"confirm_password\": \"asdfghjk\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/recovery-password/{{actionToken}}",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"recovery-password",
 								"{{actionToken}}"
 							]
 						}
@@ -391,6 +480,34 @@
 					"response": []
 				},
 				{
+					"name": "get status statistic",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/orders/statistic",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"orders",
+								"statistic"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "update order by id",
 					"request": {
 						"auth": {
@@ -449,7 +566,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"body\": \"manager text\"\r\n}",
+							"raw": "{\r\n    \"body\": \"some text manager\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -457,13 +574,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/comments/6790ef8531a6e1371c651858",
+							"raw": "{{host}}/comments/6790ef8531a6e1371c651805",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"comments",
-								"6790ef8531a6e1371c651858"
+								"6790ef8531a6e1371c651805"
 							]
 						}
 					},
@@ -564,6 +681,64 @@
 							],
 							"path": [
 								"users"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "banned user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/users/banned/67b30ef5ec5a5a95ea03ca25",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"banned",
+								"67b30ef5ec5a5a95ea03ca25"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "unbanned user",
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "PUT",
+						"header": [],
+						"url": {
+							"raw": "{{host}}/users/unbanned/67b30ef5ec5a5a95ea03ca25",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"users",
+								"unbanned",
+								"67b30ef5ec5a5a95ea03ca25"
 							]
 						}
 					},

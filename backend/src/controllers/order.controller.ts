@@ -17,6 +17,15 @@ class OrderController {
         }
     }
 
+    public async getStatusStatisticList(req: Request, res: Response, next: NextFunction) {
+        try {
+            const result = await orderService.getStatusStatisticList();
+            res.json(result);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     public async updateOrder(req: Request, res: Response, next: NextFunction) {
         try {
             const dto = req.body as IDTOOrder

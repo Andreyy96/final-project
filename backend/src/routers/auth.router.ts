@@ -28,7 +28,6 @@ router.delete(
     authController.signOut,
 );
 
-
 router.post(
     "/activate",
     authMiddleware.checkAccessToken,
@@ -37,11 +36,11 @@ router.post(
 );
 
 router.post(
-    "/activate/:actionToken",
-    authMiddleware.checkActionToken(ActionTokenTypeEnum.ACTIVATE),
-    commonMiddleware.isBodyValid(AuthValidator.schemaForSetPassword),
-    commonMiddleware.isPasswordsEqual(),
-    authController.activateAccount,
+    "/recovery-password",
+    authMiddleware.checkAccessToken,
+    accessMiddleware.isAdmin,
+    commonMiddleware.isBodyValid(AuthValidator.recoveryPassword),
+    authController.recoveryPasswordSendEmail,
 );
 
 router.post(
@@ -52,8 +51,20 @@ router.post(
     authController.createManager
 );
 
+router.put(
+    "/recovery-password/:actionToken",
+    authMiddleware.checkActionToken(ActionTokenTypeEnum.RECOVERY_PASSWORD),
+    commonMiddleware.isBodyValid(AuthValidator.schemaForSetPassword),
+    commonMiddleware.isPasswordsEqual(),
+    authController.recoveryPasswordSet,
+);
 
-
-
+router.put(
+    "/activate/:actionToken",
+    authMiddleware.checkActionToken(ActionTokenTypeEnum.ACTIVATE),
+    commonMiddleware.isBodyValid(AuthValidator.schemaForSetPassword),
+    commonMiddleware.isPasswordsEqual(),
+    authController.activateAccount,
+);
 
 export const authRouter = router;

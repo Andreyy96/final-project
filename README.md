@@ -8,6 +8,8 @@
 - Using an access token, user can make a request to receive order data.
 - Only admin can create manager
 - Before logging in, the manager must activate his account
+- Manager can recovery password
+- Get all managers with orders statistic
 
 ### Order
 

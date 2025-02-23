@@ -70,6 +70,30 @@ class AuthController {
             next(e);
         }
     }
+
+    public async recoveryPasswordSendEmail(req: Request, res: Response, next: NextFunction) {
+        try {
+            // const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+            const email = req.body.email as string
+
+            await authService.recoveryPasswordSendEmail(email);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
+
+    public async recoveryPasswordSet(req: Request, res: Response, next: NextFunction) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+            const dto = req.body as { password: string, confirm_password: string}
+
+            await authService.recoveryPasswordSet(dto, jwtPayload);
+            res.sendStatus(204);
+        } catch (e) {
+            next(e);
+        }
+    }
 }
 
 export const authController = new AuthController();

@@ -20,7 +20,7 @@ class EmailService {
                 pass: configs.SMTP_PASSWORD,
             },
         });
-        console.log(path.join(process.cwd(), "src", "templates", "views"))
+
         const hbsOptions = {
             viewEngine: {
                 extname: ".hbs",
@@ -40,7 +40,6 @@ class EmailService {
         to: string,
         context: EmailTypeToPayload[T],
     ): Promise<void> {
-        console.log(path.join(process.cwd(), "src", "templates", "views"))
         const { subject, template } = emailConstants[type];
 
         const options = { to, subject, template, context };
