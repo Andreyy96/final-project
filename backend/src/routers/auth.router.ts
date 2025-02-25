@@ -16,6 +16,12 @@ router.post(
     authController.signIn,
 );
 
+router.get(
+    "/me",
+    authMiddleware.checkAccessToken,
+    authController.me,
+);
+
 router.post(
     "/refresh",
     authMiddleware.checkRefreshToken,

@@ -14,6 +14,7 @@ import {actionTokenRepository} from "../repositories/action-token.repository";
 import {emailService} from "./email.service";
 import {EmailTypeEnum} from "../enums/email-type.enum";
 import {configs} from "../configs/config";
+import {userPresenter} from "../presenters/user.presenter";
 
 class AuthService {
 
@@ -52,6 +53,15 @@ class AuthService {
         const updateUser = await userRepository.updateLastLoginById(user._id)
 
         return {user: updateUser, tokens};
+    }
+
+    public async getMe(jwtPayload: ITokenPayload): Promise<Partial<IUser>>{
+        const user = await userRepository.getById(jwtPayload.userId)
+        if (!user) {
+            throw new ApiError("User not found", 421)
+        }
+
+        return userPresenter.toPublicResDto(user)
     }
 
     public async createManager(

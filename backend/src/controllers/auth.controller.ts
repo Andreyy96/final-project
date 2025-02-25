@@ -16,6 +16,16 @@ class AuthController {
         }
     }
 
+    public async me(req: Request, res: Response, next: NextFunction) {
+        try {
+            const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
+            const result = await authService.getMe(jwtPayload);
+            res.status(200).json(result);
+        } catch (e) {
+            next(e);
+        }
+    }
+
     public async createManager(req: Request, res: Response, next: NextFunction) {
         try {
             const dto = req.body as IDTOUser;

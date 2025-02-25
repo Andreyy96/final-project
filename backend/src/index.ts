@@ -1,5 +1,6 @@
 import express, { NextFunction, Request, Response } from "express";
 import * as mongoose from "mongoose";
+import cors from "cors"
 
 import { ApiError } from "./errors/api-error";
 import { authRouter } from "./routers/auth.router";
@@ -12,6 +13,7 @@ import {userRouter} from "./routers/user.router";
 
 const app = express();
 
+app.use(cors());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
