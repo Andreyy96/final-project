@@ -180,6 +180,12 @@ class OrderRepository {
             case ListOrderByEnum._EMAIL:
                 sortObj = {email: -1}
                 break
+            case ListOrderByEnum.PHONE:
+                sortObj = {phone: 1}
+                break
+            case ListOrderByEnum._PHONE:
+                sortObj = {phone: -1}
+                break
             case ListOrderByEnum.AGE:
                 sortObj = {age: 1}
                 break
@@ -208,7 +214,7 @@ class OrderRepository {
                 sortObj = {sum: 1}
                 break
             case ListOrderByEnum._SUM:
-                sortObj = {sum: 1}
+                sortObj = {sum: -1}
                 break
             case ListOrderByEnum.ALREADY_PAID:
                 sortObj = {already_paid: 1}
@@ -222,11 +228,11 @@ class OrderRepository {
             case ListOrderByEnum._CREATED_AT:
                 sortObj = {created_at: -1}
                 break
-            case ListOrderByEnum.UTM:
-                sortObj = {utm: 1}
+            case ListOrderByEnum.GROUP:
+                sortObj = {group: 1}
                 break
-            case ListOrderByEnum._UTM:
-                sortObj = {utm: -1}
+            case ListOrderByEnum._GROUP:
+                sortObj = {group: -1}
                 break
             case ListOrderByEnum.STATUS:
                 sortObj = {status: 1}
