@@ -3,13 +3,14 @@
 
 ### User
 
-- role: Admin or Manager
-- Login, refresh and sign-out can do only admin
+- role: Admin or Manager.
+- Login, refresh and sign-out can do only admin.
+- After logging in, the user can get data about him.
 - Using an access token, user can make a request to receive order data.
-- Only admin can create manager
-- Before logging in, the manager must activate his account
-- Manager can recovery password
-- Get all managers with orders statistic
+- Only admin can create manager.
+- Before logging in, the manager must activate his account.
+- Manager can recovery password.
+- Get all managers with orders statistic.
 
 ### Order
 
@@ -38,6 +39,11 @@ after which his name is entered in the manager column and the status changes to 
 #install all dependencies and dev dependencies in package.json
 $ cd backend
 $ npm install
+
+#install all dependencies and dev dependencies in package.json
+$ cd frontend
+$ npm install
+
 ```
 
 ## Env File
@@ -51,5 +57,9 @@ $ npm install
 ## Running the app
 
 ```bash
+#backend
 $ start:dev
+
+#fronted
+$ dev
 ```
