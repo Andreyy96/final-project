@@ -1,0 +1,37 @@
+ul {
+    gap: 5px;
+}
+
+li  {
+     width: 35px;
+     height: 35px;
+     align-items: center;
+     display: flex;
+     justify-content: center;
+
+button {
+    background: #76b852 !important;
+    border-radius: 15px;
+}
+
+div {
+    width: 35px;
+    height: 35px !important;
+    background: #76b852 !important;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+}
+li>button {
+    color: white !important;
+ }
+
+ li>div {
+     color: white !important;
+ }
+
+button:disabled {
+    display: none;
+}
