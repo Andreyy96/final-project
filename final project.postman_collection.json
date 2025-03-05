@@ -55,6 +55,58 @@
 					"response": []
 				},
 				{
+					"name": "me",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									""
+								],
+								"type": "text/javascript",
+								"packages": {}
+							}
+						}
+					],
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "bearer",
+							"bearer": [
+								{
+									"key": "token",
+									"value": "{{accessToken}}",
+									"type": "string"
+								}
+							]
+						},
+						"method": "GET",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{host}}/auth/me",
+							"host": [
+								"{{host}}"
+							],
+							"path": [
+								"auth",
+								"me"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "sign-up manager",
 					"event": [
 						{
@@ -83,7 +135,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"email\": \"test2@gmail.com\",\r\n    \"name\": \"Name\",\r\n    \"surname\": \"Surname\"\r\n}",
+							"raw": "{\r\n    \"email\": \"some@gmail.com\",\r\n    \"name\": \"Name\",\r\n    \"surname\": \"Surname\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -141,7 +193,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/auth/activate?userId=67b30ef5ec5a5a95ea03ca25",
+							"raw": "{{host}}/auth/activate?userId=67badb9803efddf3f2dcb503",
 							"host": [
 								"{{host}}"
 							],
@@ -152,7 +204,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "67b30ef5ec5a5a95ea03ca25"
+									"value": "67badb9803efddf3f2dcb503"
 								}
 							]
 						}
@@ -178,7 +230,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"password\": \"azxcvb34\",\r\n    \"confirm_password\": \"azxcvb34\"\r\n}",
+							"raw": "{\r\n    \"password\": \"Name8765!\",\r\n    \"confirm_password\": \"Name8765!\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -267,7 +319,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"password\": \"asdfghjk\",\r\n    \"confirm_password\": \"asdfghjk\"\r\n}",
+							"raw": "{\r\n    \"password\": \"Name8765!!\",\r\n    \"confirm_password\": \"Name8765!!\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -566,7 +618,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"body\": \"some text manager\"\r\n}",
+							"raw": "{\r\n    \"body\": \"some text avake\"\r\n}",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -574,13 +626,13 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/comments/6790ef8531a6e1371c651805",
+							"raw": "{{host}}/comments/6790ef8531a6e1371c651866",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"comments",
-								"6790ef8531a6e1371c651805"
+								"6790ef8531a6e1371c651866"
 							]
 						}
 					},
@@ -635,7 +687,7 @@
 						"header": [],
 						"body": {
 							"mode": "raw",
-							"raw": "{\r\n    \"name\": \"sept-2024\"\r\n}\r\n",
+							"raw": "{\r\n    \"name\": \"jan-2024\"\r\n}\r\n",
 							"options": {
 								"raw": {
 									"language": "json"
@@ -702,14 +754,14 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/users/banned/67b30ef5ec5a5a95ea03ca25",
+							"raw": "{{host}}/users/banned/67af106932888a26174312bf",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"users",
 								"banned",
-								"67b30ef5ec5a5a95ea03ca25"
+								"67af106932888a26174312bf"
 							]
 						}
 					},
@@ -731,14 +783,14 @@
 						"method": "PUT",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/users/unbanned/67b30ef5ec5a5a95ea03ca25",
+							"raw": "{{host}}/users/unbanned/67af106932888a26174312bf",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"users",
 								"unbanned",
-								"67b30ef5ec5a5a95ea03ca25"
+								"67af106932888a26174312bf"
 							]
 						}
 					},
