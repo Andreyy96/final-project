@@ -1,9 +1,8 @@
 import {Pagination} from "@mui/material";
-
-
 import {ChangeEvent} from "react";
+
 import {usePageQuery} from "../../../hooks/usePageQuery.ts";
-import "./OrderPagination.module.css"
+import css from "./OrderPagination.module.css"
 
 const OrderPagination = () => {
 
@@ -12,7 +11,7 @@ const OrderPagination = () => {
 
 
     return (
-        <div>
+        <div className={css.pagination_div}>
             <Pagination
                 count={total_page}
                 page={+page}

@@ -3,21 +3,25 @@ import {useSearchParams} from "react-router-dom";
 import {IQueryFilterOrder} from "../../../interfaces/order.interface.ts";
 import {useAppSelector} from "../../../hooks/useAppSelector.ts";
 import {useEffect, useState} from "react";
-import {useAppDispatch} from "../../../hooks/useAppDispatch.ts";
-import {authActions} from "../../../store/slices/authSlice.ts";
-import {Replay} from "@mui/icons-material";
+import {Replay, UploadFile} from "@mui/icons-material";
 import css from "./OrderFilter.module.css"
+import {useDownlandExcel} from "../../../hooks/useDownlandExcel.ts";
+import {Group} from "../../GroupsContainer/Group/Group.tsx";
 
 const OrderFilter = () => {
-    const {register, handleSubmit, setValue, reset} = useForm<IQueryFilterOrder>({
-        mode: "onBlur",
-    });
+    const {register, handleSubmit, setValue, reset} = useForm<IQueryFilterOrder>();
     const [startTrigger, setStartTrigger] = useState<boolean>(false)
     const [endTrigger, setEndTrigger] = useState<boolean>(false)
+    const {result} = useAppSelector(state => state.order)
+    const {groups} = useAppSelector(state => state.group)
+
+    const {objUrl, downlandExcel} = useDownlandExcel()
+
+    console.log("event")
 
     const {currentUser} = useAppSelector(state => state.auth)
     const [query, setQuery] = useSearchParams();
-    const dispatch = useAppDispatch()
+
 
     useEffect(() => {
         if (query.get("name")) {
@@ -61,8 +65,8 @@ const OrderFilter = () => {
         } else {
             setValue("manager", false)
         }
-        dispatch(authActions.me())
-    }, [dispatch, query, setValue]);
+        downlandExcel(result)
+    }, [query, setValue, result]);
 
     const setQ:SubmitHandler<IQueryFilterOrder> = async (queries) => {
         for (const element in queries) {
@@ -105,13 +109,13 @@ const OrderFilter = () => {
 
     return (
         <div>
-            <form onChange={handleSubmit(setQ)}>
-                <div>
-                    <input type="text" placeholder={'name'} {...register('name')}/>
-                    <input type="text" placeholder={'surname'} {...register('surname')}/>
-                    <input type="text" placeholder={'email'} {...register('email')}/>
-                    <input type="text" placeholder={'phone'} {...register('phone')}/>
-                    <input type="text" placeholder={'age'} {...register('age')}/>
+            <form className={css.main_filter_div} name={"filter_order"} onChange={handleSubmit(setQ)}>
+                <div className={css.form_input}>
+                    <input type="text" placeholder={'Name'} {...register('name')}/>
+                    <input type="text" placeholder={'Surname'} {...register('surname')}/>
+                    <input type="text" placeholder={'Email'} {...register('email')}/>
+                    <input type="text" placeholder={'Phone'} {...register('phone')}/>
+                    <input type="text" placeholder={'Age'} {...register('age')}/>
                     <select name="course" {...register("course")}>
                         <option value="">all courses</option>
                         <option value="FS">FS</option>
@@ -144,16 +148,19 @@ const OrderFilter = () => {
                     </select>
                     <select name="gropes" {...register("group")}>
                         <option value="">all groups</option>
+                        {groups.map(group => <Group group={group} key={group._id}/>)}
                     </select>
-                    <input type={startTrigger ? "date" : "text"} onClick={() => setStartTrigger(true)} placeholder={'start_date'} {...register('start_date')}/>
-                    <input type={endTrigger ? "date" : "text"} onClick={() => setEndTrigger(true)} placeholder={'end_date'} {...register('end_date')}/>
+                    <input className={css.form_input_data} type={startTrigger ? "date" : "text"} onClick={() => setStartTrigger(true)} placeholder={'Start_date'} {...register('start_date')}/>
+                    <input className={css.form_input_data} type={endTrigger ? "date" : "text"} onClick={() => setEndTrigger(true)} placeholder={'End_date'} {...register('end_date')}/>
                 </div>
-                <div>
+                <div className={css.form_button_div}>
                     <label>
-                        <input type="checkbox" value={currentUser && currentUser.name || ""} {...register('manager')}/>
+                        <input className={css.form_input_checkbox} type="checkbox" value={currentUser && currentUser.name || ""} {...register('manager')}/>
                         My
                     </label>
-                    <button formAction={resetTab}><Replay className={css.svg_reload}/></button>
+                    <button className={css.button_reset} formAction={resetTab}><Replay className={css.svg_reload}/></button>
+                    <a href={objUrl} download="orders_table.xlsx"><UploadFile/></a>
+
                 </div>
             </form>
         </div>

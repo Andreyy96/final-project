@@ -3,17 +3,21 @@ import {useEffect} from "react";
 import {useAppDispatch} from "../../../hooks/useAppDispatch.ts";
 import {orderActions} from "../../../store/slices/orderSlice.ts";
 import {Order} from "../Order/Order.tsx";
-import "./Orders.module.css"
+import css from "./Orders.module.css"
 import {OrderPagination} from "../OrderPagination/OrderPagination.tsx";
 import {useAppLocation} from "../../../hooks/useAppLocation.ts";
 import {useAppSortTable} from "../../../hooks/useAppSortTable.ts";
 import {ISortOrder} from "../../../interfaces/order.interface.ts";
 import {OrderFilter} from "../OrderFilter/OrderFilter.tsx";
 import {usePageQuery} from "../../../hooks/usePageQuery.ts";
+import {groupActions} from "../../../store/slices/groupSlice.ts";
 
 const Orders = () => {
 
     const {orders} = useAppSelector(state => state.order)
+    const {trigger} = useAppSelector(state => state.comment)
+    const {groupTrigger} = useAppSelector(state => state.group)
+    const {orderTrigger} = useAppSelector(state => state.order)
     const {total_page} = usePageQuery()
     const dispatch = useAppDispatch()
     const {
@@ -36,15 +40,13 @@ const Orders = () => {
 
     const {search} = useAppLocation()
 
-    console.log(search)
-
     useEffect(() => {
         dispatch(orderActions.getAll({query: search}))
-    }, [dispatch, search]);
+        dispatch(groupActions.getAll())
+    }, [dispatch, search, trigger, groupTrigger, orderTrigger]);
 
-    console.log(total_page)
     return (
-        <div>
+        <div className={css.main_page_div}>
             <OrderFilter/>
         <table>
             <thead>
@@ -67,7 +69,7 @@ const Orders = () => {
             </tr>
             </thead>
             <tbody>
-            {orders.map(order => <Order order={order} key={order._id}/>)}
+            {orders.map((order, index) => <Order order={order} index={index+1} key={order._id}/>)}
             </tbody>
         </table>
             {total_page !== 1 && <OrderPagination/>}

@@ -15,6 +15,10 @@ td, th {
     font-size: 15px;
 }
 
-tr:nth-child(even) {
-    background-color: #dddddd;
+.main_page_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    flex-direction: column;
 }
