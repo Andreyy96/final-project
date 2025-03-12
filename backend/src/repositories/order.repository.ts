@@ -1,12 +1,12 @@
 import {Order} from "../models/order.model";
 import {ListOrderByEnum} from "../enums/orderBy.enum";
-import {IDTOOrder, IOrder, ISingleOrder} from "../interfaces/order.interface";
+import {IDTOOrder, IGeneralInfoOrder, IOrder, ISingleOrder} from "../interfaces/order.interface";
 import {IQuery} from "../interfaces/query.interface";
 import {FilterQuery} from "mongoose";
 import {StatusEnum} from "../enums/status.enum";
 
 class OrderRepository {
-    public async getListNoAggregation(query: IQuery): Promise<[IOrder[], number, number]> {
+    public async getListNoAggregation(query: IQuery): Promise<[IOrder[], number, number, IGeneralInfoOrder[]]> {
 
         const page = query.page ? query.page : 1
         const filterObj = this.getFilterObj(query)
@@ -15,11 +15,12 @@ class OrderRepository {
         return await Promise.all([
             Order.find(filterObj).limit(25).skip(skip),
             Order.countDocuments(filterObj),
-            25
+            25,
+            Order.find(filterObj),
         ]);
     }
 
-    public async getSortListNoAggregation(query: IQuery): Promise<[IOrder[], number, number]> {
+    public async getSortListNoAggregation(query: IQuery): Promise<[IOrder[], number, number, IGeneralInfoOrder[]]> {
 
         const page = query.page ? query.page : 1
         const sortObj = this.getSortObj(query.order)
@@ -29,7 +30,8 @@ class OrderRepository {
         return await Promise.all([
             Order.find(filterObj).limit(25).skip(skip).sort(sortObj),
             Order.countDocuments(filterObj),
-            25
+            25,
+            Order.find(filterObj).sort(sortObj),
         ]);
     }
 
@@ -51,7 +53,9 @@ class OrderRepository {
                     from: "comments",
                     let: { id: "$_id" },
                     as: "comments",
-                    pipeline: [{ $match: { $expr: { $eq: ["$_orderId", "$$id"] } } }],
+                    pipeline: [
+                        { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
+                        { $sort: { createdAt: -1 } } ],
                 },
             },
             ])
@@ -60,7 +64,7 @@ class OrderRepository {
 
 
 
-    public async getList(query: IQuery): Promise<[IOrder[], number, number]> {
+    public async getList(query: IQuery): Promise<[IOrder[], number, number, IGeneralInfoOrder[]]> {
         const page = query.page ? query.page : 1
 
         const skip = 25 * (+page - 1);
@@ -80,17 +84,20 @@ class OrderRepository {
                         from: "comments",
                         let: { id: "$_id" },
                         as: "comments",
-                        pipeline: [{ $match: { $expr: { $eq: ["$_orderId", "$$id"] } } }],
+                        pipeline: [
+                            { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
+                            { $sort: { createdAt: -1 } } ],
                     },
                 },
                 { $skip: skip },
             ]).limit(25),
             Order.countDocuments(),
-            25
+            25,
+            Order.find({})
         ])
     }
 
-    public async getListByOrder(query: IQuery): Promise<[IOrder[], number, number]> {
+    public async getListByOrder(query: IQuery): Promise<[IOrder[], number, number, IGeneralInfoOrder[]]> {
 
         const sortObj = this.getSortObj(query.order)
         const page = query.page ? query.page : 1
@@ -112,7 +119,9 @@ class OrderRepository {
                        from: "comments",
                        let: { id: "$_id" },
                        as: "comments",
-                       pipeline: [{ $match: { $expr: { $eq: ["$_orderId", "$$id"] } } }],
+                       pipeline: [
+                           { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
+                           { $sort: { createdAt: -1 } } ],
                    },
                },
                { $sort: sortObj },
@@ -120,7 +129,8 @@ class OrderRepository {
 
            ]).limit(25),
            Order.countDocuments(),
-           25
+           25,
+           Order.find().sort(sortObj)
        ])
     }
 

@@ -11,23 +11,23 @@ class OrderService {
 
         if ((query.name || query.surname || query.age || query.group || query.course || query.course_format ||
             query.course_type || query.email || query.status || query.phone || query.start_date || query.manager || query.end_date) && !query.order) {
-            const [entries, total, limit] = await orderRepository.getListNoAggregation(query)
+            const [entries, total, limit, result] = await orderRepository.getListNoAggregation(query)
             const orders = await this.makeOneArray(entries)
-            return orderPresenter.toListResDto(orders, total, limit, query)
+            return orderPresenter.toListResDto(orders, total, limit, query, result)
         }
         else if ((query.name || query.surname || query.age || query.group || query.course || query.course_format ||
             query.course_type || query.email || query.status || query.phone || query.start_date || query.manager || query.end_date) && query.order) {
-            const [entries, total, limit] = await orderRepository.getSortListNoAggregation(query)
+            const [entries, total, limit, result] = await orderRepository.getSortListNoAggregation(query)
             const orders = await this.makeOneArray(entries)
-            return orderPresenter.toListResDto(orders, total, limit, query)
+            return orderPresenter.toListResDto(orders, total, limit, query, result)
         }
         else if (query.order) {
-            const [entities, total, limit] = await orderRepository.getListByOrder(query);
-            return orderPresenter.toListResDto(entities, total, limit, query)
+            const [entities, total, limit, result] = await orderRepository.getListByOrder(query);
+            return orderPresenter.toListResDto(entities, total, limit, query, result)
         }
         else {
-            const [entities, total, limit] = await orderRepository.getList(query);
-            return orderPresenter.toListResDto(entities, total, limit, query)
+            const [entities, total, limit, result] = await orderRepository.getList(query);
+            return orderPresenter.toListResDto(entities, total, limit, query, result)
         }
     }
 

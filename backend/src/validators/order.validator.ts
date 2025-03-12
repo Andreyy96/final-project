@@ -32,14 +32,14 @@ export class OrderValidator {
         surname: Joi.string().allow(null, '').required(),
         email: Joi.string().regex(regexConstant.EMAIL).allow(null, '').required(),
         phone: Joi.string().regex(regexConstant.PHONE).allow(null, '').required(),
-        age: Joi.number().min(18).max(100).allow(null).required(),
+        age: Joi.number().min(18).max(100).allow(null, '').required(),
         course: Joi.string().valid(...Object.values(CourseEnum)).allow(null, '').required(),
         course_format: Joi.string().valid(...Object.values(CourseFormatEnum)).allow(null, '').required(),
         course_type: Joi.string().valid(...Object.values(CourseTypeEnum)).allow(null, '').required(),
-        sum: Joi.number().min(1000).allow(null).required(),
-        already_paid: Joi.number().min(1000).allow(null).required(),
+        sum: Joi.number().min(1000).allow(null, '').required(),
+        already_paid: Joi.number().min(1000).allow(null, '').required(),
         status: Joi.string().valid(...Object.values(StatusEnum)).allow(null, '').required(),
-        group: Joi.string().allow(null).required(),
+        group: Joi.string().allow(null, '').required(),
     });
 
 }

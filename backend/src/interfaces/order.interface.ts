@@ -109,4 +109,5 @@ export interface IOrderListResponse {
     total: number;
     limit: number;
     page: number;
+    result: IOrder[];
 }
