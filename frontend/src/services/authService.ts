@@ -23,6 +23,10 @@ const authService = {
         const {data} = await apiService.post(urls.auth.refresh, {refresh});
         this.setTokens(data)
     },
+    async logOut(): Promise<void> {
+        await apiService.delete(urls.auth.logOut)
+        this.deleteTokens()
+    },
     setTokens(tokens: ITokenPair): void {
         localStorage.setItem(accessTokenKey, tokens.accessToken)
         localStorage.setItem(refreshTokenKey, tokens.refreshToken)

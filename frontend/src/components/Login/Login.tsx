@@ -38,9 +38,9 @@ const Login = () => {
                 {errors.email && <p>{errors.email.message}</p>}
                     <label htmlFor={"password"}>Password</label>
                 {errors.password ?
-                    <input className={`${css.redBorder}`} id={"password"} type="text" placeholder={'password'} {...register('password')}/>
+                    <input className={`${css.redBorder}`} id={"password"} type="password" placeholder={'password'} {...register('password')}/>
                     :
-                    <input id={"password"} type="text" placeholder={'password'} {...register('password')}/>
+                    <input id={"password"} type="password" placeholder={'password'} {...register('password')}/>
                 }
                 {errors.password && <p>{errors.password.message}</p>}
                 {loginError && <p>{loginError}</p>}
