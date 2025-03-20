@@ -24,7 +24,7 @@ class AuthService {
         const user = await userRepository.getByEmail(dto.email)
 
         if (!user) {
-            throw new ApiError("User not found", 421);
+            throw new ApiError("Wrong email or password", 401);
         }
 
         if (!user.password) {
@@ -38,7 +38,7 @@ class AuthService {
 
         const isPasswordCorrect = await passwordService.comparePassword(dto.password, user.password)
         if (!isPasswordCorrect) {
-            throw new ApiError("Invalid credentials", 401);
+            throw new ApiError("Wrong email or password", 401);
         }
 
        await this.deleteTokens(user._id)

@@ -13,7 +13,7 @@ class OrderRepository {
 
         const skip = 25 * (+page - 1);
         return await Promise.all([
-            Order.find(filterObj).limit(25).skip(skip),
+            Order.find(filterObj).limit(25).skip(skip).sort({id: -1}),
             Order.countDocuments(filterObj),
             25,
             Order.find(filterObj),
@@ -89,6 +89,7 @@ class OrderRepository {
                             { $sort: { createdAt: -1 } } ],
                     },
                 },
+                { $sort: { id: -1 } },
                 { $skip: skip },
             ]).limit(25),
             Order.countDocuments(),
@@ -145,13 +146,13 @@ class OrderRepository {
 
     public async updateById(dto: IDTOOrder, order: ISingleOrder): Promise<ISingleOrder> {
         if (dto.status === StatusEnum.NEW) {
-            return await Order.findByIdAndUpdate(order._id, {...dto, manager: null, _userId: null}, {new: true});
+            return await Order.findByIdAndUpdate(order._id, {...dto, status: dto.status ? dto.status : null, manager: null, _userId: null}, {new: true});
         } else {
-            return await Order.findByIdAndUpdate(order._id, dto, {new: true});
+            return await Order.findByIdAndUpdate(order._id, {...dto, status: dto.status ? dto.status : null}, {new: true});
         }
     }
 
-    public async getStatusStatisticList(): Promise<[number, number, number, number, number, number]> {
+    public async getStatusStatisticList(): Promise<[number, number, number, number, number, number, number]> {
         return await Promise.all([
             Order.countDocuments(),
             Order.countDocuments({status: StatusEnum.AGREE}),
@@ -159,6 +160,7 @@ class OrderRepository {
             Order.countDocuments({status: StatusEnum.DISAGREE}),
             Order.countDocuments({status: StatusEnum.DUBBING}),
             Order.countDocuments({status: StatusEnum.NEW}),
+            Order.countDocuments({status: null}),
         ]);
     }
 
