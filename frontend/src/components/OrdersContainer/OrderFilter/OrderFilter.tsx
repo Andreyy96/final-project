@@ -17,8 +17,6 @@ const OrderFilter = () => {
 
     const {objUrl, downlandExcel} = useDownlandExcel()
 
-    console.log("event")
-
     const {currentUser} = useAppSelector(state => state.auth)
     const [query, setQuery] = useSearchParams();
 

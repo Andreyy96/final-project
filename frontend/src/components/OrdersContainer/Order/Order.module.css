@@ -18,8 +18,14 @@
     right: 100px;
     bottom: 20px;
     display: flex;
+    flex-direction: column;
     gap: 5px;
     padding: 10px;
+}
+
+.form_div {
+    display: flex;
+    gap: 5px;
 }
 
 .input {
@@ -66,7 +72,7 @@ button.submit:disabled{
     position: absolute;
     background: white;
     width: 490px;
-    top: 30px;
+    top: 20px;
     right: 100px;
     padding: 15px;
     border-radius: 25px;
@@ -85,4 +91,10 @@ tr.gray:hover{
     color: white;
     cursor: pointer;
 }
+
+.border_red_submit {
+    width: 420px;
+    border: 2px solid red;
+}
+
 

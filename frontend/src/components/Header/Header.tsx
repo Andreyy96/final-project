@@ -32,7 +32,7 @@ const Header = () => {
 
     return (
         <div className={css.Header}>
-            <div className={css.div_logo}>
+            <div onClick={() => navigate("/orders")} className={css.div_logo}>
                 <h1>Logo</h1>
             </div>
             <div className={css.div_info}>
@@ -40,7 +40,7 @@ const Header = () => {
                     <p>{ currentUser && currentUser.name}</p>
                 </div>
                 <div className={css.tools}>
-                    { currentUser&& currentUser.role === UserRoleEnum.ADMIN && <button><ManageAccounts/></button>}
+                    { currentUser&& currentUser.role === UserRoleEnum.ADMIN && <button onClick={() => navigate("/adminPanel")}><ManageAccounts/></button>}
                     <button onClick={signOut}><ExitToApp/></button>
                 </div>
             </div>

@@ -11,6 +11,7 @@ import {ISortOrder} from "../../../interfaces/order.interface.ts";
 import {OrderFilter} from "../OrderFilter/OrderFilter.tsx";
 import {usePageQuery} from "../../../hooks/usePageQuery.ts";
 import {groupActions} from "../../../store/slices/groupSlice.ts";
+import {useDebounce} from "../../../hooks/useDebounce.ts";
 
 const Orders = () => {
 
@@ -39,11 +40,17 @@ const Orders = () => {
     }: ISortOrder = useAppSortTable()
 
     const {search} = useAppLocation()
+    const debouncedSearchTerm = useDebounce(search, 1000);
 
     useEffect(() => {
-        dispatch(orderActions.getAll({query: search}))
-        dispatch(groupActions.getAll())
-    }, [dispatch, search, trigger, groupTrigger, orderTrigger]);
+        if (debouncedSearchTerm.debouncedValue) {
+            dispatch(orderActions.getAll({query: debouncedSearchTerm.debouncedValue}))
+            dispatch(groupActions.getAll())
+        } else {
+            dispatch(orderActions.getAll({query: search}))
+            dispatch(groupActions.getAll())
+        }
+    }, [dispatch, debouncedSearchTerm.debouncedValue, trigger, groupTrigger, orderTrigger]);
 
     return (
         <div className={css.main_page_div}>

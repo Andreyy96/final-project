@@ -62,7 +62,7 @@ const ModalWindow:FC<IProps> = ({order}) => {
             setValue("status", order.status)
         }
         if (order.group) {
-            setValue("group", order.course_format)
+            setValue("group", order.group)
         }
     }, [order, setValue, selectOrText]);
 
@@ -98,7 +98,7 @@ const ModalWindow:FC<IProps> = ({order}) => {
                                 {selectOrText || order.group ?
                                     <>
                                         <select name="group" {...register("group")}>
-                                            <option value="">all groups</option>
+                                            <option value="">null</option>
                                             {groups.map(group => <Group group={group} key={group._id}/>)}
                                         </select>
                                         {errors.group && <p>{errors.group.message}</p>}
@@ -120,7 +120,7 @@ const ModalWindow:FC<IProps> = ({order}) => {
                         <div>
                             <label className={css.form_item}>Status
                                 <select name="status" {...register("status")}>
-                                    <option value="">all statuses</option>
+                                    <option value="">null</option>
                                     <option value="In work">In work</option>
                                     <option value="New">New</option>
                                     <option value="Agree">Agree</option>
@@ -163,7 +163,7 @@ const ModalWindow:FC<IProps> = ({order}) => {
                         <div>
                             <label className={css.form_item}>Course
                                 <select name="course" {...register("course")}>
-                                    <option value="">all courses</option>
+                                    <option value="">null</option>
                                     <option value="FS">FS</option>
                                     <option value="QACX">QACX</option>
                                     <option value="JCX">JCX</option>
@@ -183,7 +183,7 @@ const ModalWindow:FC<IProps> = ({order}) => {
                         <div>
                             <label className={css.form_item}>Course Format
                                 <select name="course_format" {...register("course_format")}>
-                                    <option value="">all formats</option>
+                                    <option value="">null</option>
                                     <option value="static">static</option>
                                     <option value="online">online</option>
                                 </select>
@@ -198,7 +198,7 @@ const ModalWindow:FC<IProps> = ({order}) => {
                         <div>
                             <label className={css.form_item}>Course Type
                                 <select name="course_type"  {...register("course_type")}>
-                                    <option value="">all types</option>
+                                    <option value="">null</option>
                                     <option value="pro">pro</option>
                                     <option value="minimal">minimal</option>
                                     <option value="premium">premium</option>
