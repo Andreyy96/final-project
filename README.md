@@ -23,6 +23,7 @@
 course_type, manager, start_date, end_date.
 - if the order status changes to New then the manager and _userId fields will become null
 
+
 ### Comment
 
 The user can leave comments under the order only where there is no manager or he himself is the manager of this order, 
@@ -32,6 +33,11 @@ after which his name is entered in the manager column and the status changes to 
 
 - any user can get all groups
 - any user can create group (group name must be unique)
+
+### Frontend
+
+- The button in the filter, when clicked, downloads an Excel file with orders
+- Clicking on the logo in the header will take you to the orders page.
 
 ## Installation
 
