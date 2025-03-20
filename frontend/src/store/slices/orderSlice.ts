@@ -1,6 +1,12 @@
 import {createAsyncThunk, createSlice, isFulfilled} from "@reduxjs/toolkit";
 import {AxiosError} from "axios";
-import {IGeneralInfoOrder, IOrder, IOrderPagination, IUpdateDtoOrder} from "../../interfaces/order.interface.ts";
+import {
+    IGeneralInfoOrder,
+    IOrder,
+    IOrderPagination,
+    IStatusStatistic,
+    IUpdateDtoOrder
+} from "../../interfaces/order.interface.ts";
 import {orderService} from "../../services/orderService.ts";
 
 interface IState {
@@ -10,6 +16,8 @@ interface IState {
     limit: number
     page: number
     result: IGeneralInfoOrder[]
+    status_statistic: IStatusStatistic
+    order_tr: string
 }
 
 const initialState: IState = {
@@ -18,7 +26,9 @@ const initialState: IState = {
     total: null,
     limit: null,
     page: null,
-    result: []
+    result: [],
+    status_statistic: null,
+    order_tr: null
 }
 
 const getAll = createAsyncThunk<IOrderPagination, {query: string}>(
@@ -26,6 +36,20 @@ const getAll = createAsyncThunk<IOrderPagination, {query: string}>(
     async ({query}, thunkAPI) => {
         try {
             const {data} = await orderService.getAll(query)
+            return data
+        }
+        catch (e) {
+            const error = e as AxiosError
+            return thunkAPI.rejectWithValue(error.response.data)
+        }
+    }
+)
+
+const getStatusStatistic = createAsyncThunk<IStatusStatistic>(
+    "orderSlice/getStatusStatistic",
+    async (_, thunkAPI) => {
+        try {
+            const {data} = await orderService.getStatusStatistic()
             return data
         }
         catch (e) {
@@ -52,7 +76,11 @@ const updateById = createAsyncThunk<void, {id: string, dto: IUpdateDtoOrder}>(
 const orderSlice = createSlice({
     name: "orderSlice",
     initialState,
-    reducers: {},
+    reducers: {
+        setString: (state, action) => {
+            state.order_tr = action.payload
+        },
+    },
     extraReducers: builder => builder
         .addCase(getAll.fulfilled, (state, action) => {
             state.orders = action.payload.data
@@ -60,6 +88,9 @@ const orderSlice = createSlice({
             state.limit = action.payload.limit
             state.total = action.payload.total
             state.result = action.payload.result
+        })
+        .addCase(getStatusStatistic.fulfilled, (state, action) => {
+            state.status_statistic = action.payload
         })
         .addMatcher(isFulfilled(updateById), state =>{
             state.orderTrigger = !state.orderTrigger
@@ -71,7 +102,8 @@ const {reducer: orderReducer, actions} = orderSlice
 const orderActions = {
     ...actions,
     getAll,
-    updateById
+    updateById,
+    getStatusStatistic
 }
 
 export {

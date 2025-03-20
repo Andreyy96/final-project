@@ -29,3 +29,28 @@ export interface IManagerInfo {
 	is_banned: boolean;
 	role: string;
 }
+
+export interface IManagerWithStatistic {
+    user: {
+        _id: string
+        id: number
+        name: string
+        surname: string
+        email: string
+        role: string
+        is_active: boolean
+        last_login: string
+        is_banned: boolean
+    }
+    orders: {
+        total: number
+        in_work: number
+        agree: number
+        disagree: number
+        dubbing: number
+    }
+}
+
+export interface IManagerRes {
+    data: IManagerWithStatistic[];
+}

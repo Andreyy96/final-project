@@ -4,6 +4,7 @@ const auth = '/auth'
 const orders = "/orders"
 const comments = "/comments"
 const groups = "/groups"
+const users = "/users"
 
 
 const urls = {
@@ -16,6 +17,7 @@ const urls = {
     order: {
         getAll: (query: string): string =>  `${orders}${query}`,
         updateById: (id: string): string => `${orders}/${id}`,
+        getStatusStatistic: `${orders}/statistic`,
     },
     comment: {
         postComment: (id: string): string => `${comments}/${id}`
@@ -23,6 +25,9 @@ const urls = {
     group: {
         getAll: groups,
         createGroup: groups
+    },
+    user: {
+        getAllManagers: users
     }
 }
 

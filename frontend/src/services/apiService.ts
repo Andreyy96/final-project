@@ -10,9 +10,12 @@ const apiService = axios.create({baseURL})
 
 apiService.interceptors.request.use(req => {
     const accessToken = authService.getAccessToken();
+    const refreshToken = authService.getRefreshToken();
 
-    if (accessToken) {
+    if (accessToken && req.url !== urls.auth.refresh) {
         req.headers.Authorization = `Bearer ${accessToken}`
+    } else {
+        req.headers.Authorization = `Bearer ${refreshToken}`
     }
     return req
 })

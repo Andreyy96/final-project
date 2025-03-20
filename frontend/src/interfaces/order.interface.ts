@@ -101,3 +101,13 @@ export interface IUpdateDtoOrder {
 	sum?: string
 	already_paid?: string
 }
+
+export interface IStatusStatistic {
+	total: number,
+	agree: number,
+	in_work: number,
+	disagree: number,
+	dubbing:  number,
+	new: number,
+	null: number
+}
