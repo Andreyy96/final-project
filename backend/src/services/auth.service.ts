@@ -1,6 +1,5 @@
 import {ITokenPair, ITokenPayload} from "../interfaces/token.interface";
 
-import {ISignIn} from "../interfaces/auth.interface";
 import {IDTOUser, IUser} from "../interfaces/user.interface";
 import {userRepository} from "../repositories/user.repository";
 import {ApiError} from "../errors/api-error";
@@ -19,27 +18,8 @@ import {userPresenter} from "../presenters/user.presenter";
 class AuthService {
 
     public async signIn(
-        dto: ISignIn,
+        user: IUser
     ): Promise<{ user: IUser; tokens: ITokenPair }> {
-        const user = await userRepository.getByEmail(dto.email)
-
-        if (!user) {
-            throw new ApiError("Wrong email or password", 401);
-        }
-
-        if (!user.password) {
-            throw new ApiError("Manager must activate his profile", 403)
-        }
-
-        if (user.is_banned) {
-            throw new ApiError("Admin banned your account", 400)
-        }
-
-
-        const isPasswordCorrect = await passwordService.comparePassword(dto.password, user.password)
-        if (!isPasswordCorrect) {
-            throw new ApiError("Wrong email or password", 401);
-        }
 
        await this.deleteTokens(user._id)
 

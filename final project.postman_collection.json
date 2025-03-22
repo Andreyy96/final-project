@@ -751,17 +751,17 @@
 								}
 							]
 						},
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/users/banned/67af106932888a26174312bf",
+							"raw": "{{host}}/users/banned/67b30ef5ec5a5a95ea03ca25",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"users",
 								"banned",
-								"67af106932888a26174312bf"
+								"67b30ef5ec5a5a95ea03ca25"
 							]
 						}
 					},
@@ -780,17 +780,17 @@
 								}
 							]
 						},
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"url": {
-							"raw": "{{host}}/users/unbanned/67af106932888a26174312bf",
+							"raw": "{{host}}/users/unbanned/67b30ef5ec5a5a95ea03ca25",
 							"host": [
 								"{{host}}"
 							],
 							"path": [
 								"users",
 								"unbanned",
-								"67af106932888a26174312bf"
+								"67b30ef5ec5a5a95ea03ca25"
 							]
 						}
 					},

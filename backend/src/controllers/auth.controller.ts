@@ -1,15 +1,14 @@
 import {Request, Response, NextFunction} from "express";
 import {authService} from "../services/auth.service";
-import {ISignIn} from "../interfaces/auth.interface";
 import {ITokenPayload} from "../interfaces/token.interface";
-import {IDTOUser} from "../interfaces/user.interface";
+import {IDTOUser, IUser} from "../interfaces/user.interface";
 
 class AuthController {
 
     public async signIn(req: Request, res: Response, next: NextFunction) {
         try {
-            const dto = req.body as ISignIn;
-            const result = await authService.signIn(dto);
+            const user =  req.res.locals.user as IUser
+            const result = await authService.signIn(user);
             res.status(201).json(result);
         } catch (e) {
             next(e);

@@ -7,12 +7,17 @@ import {authMiddleware} from "../middlewares/auth.middleware";
 import {UserValidator} from "../validators/user.validator";
 import {accessMiddleware} from "../middlewares/access.middleware";
 import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
+import {userMiddleware} from "../middlewares/user.middleware";
 
 const router = Router();
 
 router.post(
     "/sign-in",
     commonMiddleware.isBodyValid(AuthValidator.schemaForLogin),
+    userMiddleware.checkEmail,
+    userMiddleware.isAccountActive,
+    userMiddleware.isAccountBanned,
+    userMiddleware.checkPassword,
     authController.signIn,
 );
 

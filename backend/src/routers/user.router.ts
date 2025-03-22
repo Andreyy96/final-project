@@ -15,7 +15,7 @@ router.get(
     userController.getList,
 );
 
-router.put(
+router.patch(
     "/banned/:userId",
     authMiddleware.checkAccessToken,
     accessMiddleware.isAdmin,
@@ -23,7 +23,7 @@ router.put(
     userController.bannedManagerById,
 );
 
-router.put(
+router.patch(
     "/unbanned/:userId",
     authMiddleware.checkAccessToken,
     accessMiddleware.isAdmin,
