@@ -15,6 +15,11 @@ const AuthRequired:FC<IProps> = ({children}) => {
         return <Navigate to={"/login"}/>
     }
 
+    if (currentUser && currentUser.is_banned) {
+        authService.deleteTokens()
+        return <Navigate to={"/login"}/>
+    }
+
     return (
         <>
             {children}

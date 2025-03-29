@@ -10,9 +10,8 @@ li {
     justify-content: center;
 }
 
-button {
+button:hover {
     background: #76b852 !important;
-    border-radius: 15px;
 }
 
 li>div {

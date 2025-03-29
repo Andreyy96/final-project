@@ -5,7 +5,6 @@ const OrderStatistic = () => {
 
     const {status_statistic} = useAppSelector(state => state.order)
 
-    console.log(status_statistic)
     return (
         <div className={css.statistic_container}>
             <div>

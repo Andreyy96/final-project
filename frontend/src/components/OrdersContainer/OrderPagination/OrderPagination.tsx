@@ -1,5 +1,6 @@
 import {Pagination} from "@mui/material";
 import {ChangeEvent} from "react";
+import "./OrderPagination.css"
 
 import {usePageQuery} from "../../../hooks/usePageQuery.ts";
 import css from "./OrderPagination.module.css"
