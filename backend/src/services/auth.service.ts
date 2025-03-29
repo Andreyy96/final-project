@@ -102,7 +102,7 @@ class AuthService {
         const user = await userRepository.getByEmail(email);
 
         if (!user) {
-            throw new ApiError("User not found", 421);
+            throw new ApiError("User not found", 404);
         }
 
         if (!user.is_active) {
@@ -130,7 +130,7 @@ class AuthService {
         jwtPayload: ITokenPayload,
     ): Promise<void> {
         const password = await passwordService.hashPassword(dto.password);
-        await userRepository.updateById(jwtPayload.userId, { password });
+        await userRepository.updatePasswordById(jwtPayload.userId, { password });
 
         await actionTokenRepository.deleteByParams({
             _userId: jwtPayload.userId,
@@ -141,7 +141,6 @@ class AuthService {
             accessTokenRepository.deleteByParams({_userId: jwtPayload.userId}),
             refreshTokenRepository.deleteByParams({_userId: jwtPayload.userId})
         ])
-
     }
 
     private async isEmailExistOrThrow(email: string): Promise<void> {

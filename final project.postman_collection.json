@@ -193,7 +193,7 @@
 							}
 						},
 						"url": {
-							"raw": "{{host}}/auth/activate?userId=67badb9803efddf3f2dcb503",
+							"raw": "{{host}}/auth/activate?userId=67e32e6c63997e6f42f0af83",
 							"host": [
 								"{{host}}"
 							],
@@ -204,7 +204,7 @@
 							"query": [
 								{
 									"key": "userId",
-									"value": "67badb9803efddf3f2dcb503"
+									"value": "67e32e6c63997e6f42f0af83"
 								}
 							]
 						}
@@ -226,7 +226,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",
@@ -315,7 +315,7 @@
 						}
 					],
 					"request": {
-						"method": "PUT",
+						"method": "PATCH",
 						"header": [],
 						"body": {
 							"mode": "raw",

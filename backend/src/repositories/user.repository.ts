@@ -85,6 +85,10 @@ class UserRepository {
         return await User.findByIdAndUpdate(userId, {...dto, is_active: true}, { new: true });
     }
 
+    public async updatePasswordById(userId: string, dto: Partial<IUser>): Promise<IUser> {
+        return await User.findByIdAndUpdate(userId, dto, { new: true });
+    }
+
     public async getById(userId: string): Promise<IUser | null> {
         return await User.findById(userId).select("+password");
     }

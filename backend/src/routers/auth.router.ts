@@ -50,7 +50,6 @@ router.post(
     "/recovery-password",
     authMiddleware.checkAccessToken,
     accessMiddleware.isAdmin,
-    commonMiddleware.isBodyValid(AuthValidator.recoveryPassword),
     authController.recoveryPasswordSendEmail,
 );
 
@@ -62,7 +61,7 @@ router.post(
     authController.createManager
 );
 
-router.put(
+router.patch(
     "/recovery-password/:actionToken",
     authMiddleware.checkActionToken(ActionTokenTypeEnum.RECOVERY_PASSWORD),
     commonMiddleware.isBodyValid(AuthValidator.schemaForSetPassword),
@@ -70,7 +69,7 @@ router.put(
     authController.recoveryPasswordSet,
 );
 
-router.put(
+router.patch(
     "/activate/:actionToken",
     authMiddleware.checkActionToken(ActionTokenTypeEnum.ACTIVATE),
     commonMiddleware.isBodyValid(AuthValidator.schemaForSetPassword),
