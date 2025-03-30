@@ -1,39 +1,62 @@
 import {FC} from 'react';
 import {IManagerWithStatistic} from "../../../interfaces/user.interface.ts";
 import css from "./Manager.module.css"
+import {useAppDispatch} from "../../../hooks/useAppDispatch.ts";
+import {userActions} from "../../../store/slices/userSlice.ts";
+import {authActions} from "../../../store/slices/authSlice.ts";
 
 interface IProps {
     manager: IManagerWithStatistic
 }
 
-const Manager: FC<IProps> = ({manager}) => {
+const Manager: FC<IProps> = ({manager: {user, orders}}) => {
+    const dispatch = useAppDispatch()
+
+    const banUser = () => {
+        dispatch(userActions.bannedById({userId: user._id}))
+    }
+
+    const unbanUser = () => {
+        dispatch(userActions.unbannedById({userId: user._id}))
+    }
+
+    const sendEmailForActivate = () => {
+        dispatch(authActions.sendEmailForActivate({userId: user._id}))
+    }
+
+    const sendEmailForRecoveryPassword = () => {
+        dispatch(authActions.sendEmailForRecoveryPassword({email: user.email}))
+    }
+
+
+
     return (
         <div className={css.manager_main_div}>
             <div className={css.user_info_div}>
-                <p>Id: {manager.user.id}</p>
-                <p>Name: {manager.user.name}</p>
-                <p>Surname: {manager.user.surname}</p>
-                <p>Email: {manager.user.email}</p>
-                <p>Last login: {manager.user.last_login}</p>
-                <p>Banned: {!manager.user.is_banned ? "false" : "true"}</p>
-                <p>Is active: {!manager.user.is_active ? "false" : "true"}</p>
+                <p>Id: {user.id}</p>
+                <p>Name: {user.name}</p>
+                <p>Surname: {user.surname}</p>
+                <p>Email: {user.email}</p>
+                <p>Last login: {user.last_login}</p>
+                <p>Banned: {!user.is_banned ? "false" : "true"}</p>
+                <p>Is active: {!user.is_active ? "false" : "true"}</p>
             </div>
             <div className={css.statistic_div}>
-                <p>Total: {manager.orders.total}</p>
-                <p>In work: {manager.orders.in_work}</p>
-                <p>Agree: {manager.orders.agree}</p>
-                <p>Disagree: {manager.orders.disagree}</p>
-                <p>Dubbing:{manager.orders.dubbing}</p>
+                <p>Total: {orders.total}</p>
+                <p>In work: {orders.in_work}</p>
+                <p>Agree: {orders.agree}</p>
+                <p>Disagree: {orders.disagree}</p>
+                <p>Dubbing:{orders.dubbing}</p>
             </div>
             <div className={css.buttons_div}>
                 {
-                    !manager.user.is_active ?
-                        <button>ACTIVATE</button>
+                    !user.is_active ?
+                        <button onClick={sendEmailForActivate}>ACTIVATE</button>
                         :
-                        <button>RECOVERY PASSWORD</button>
+                        <button onClick={sendEmailForRecoveryPassword}>RECOVERY PASSWORD</button>
                 }
-                <button>BAN</button>
-                <button>UNBAN</button>
+                <button onClick={banUser}>BAN</button>
+                <button onClick={unbanUser}>UNBAN</button>
             </div>
         </div>
     );

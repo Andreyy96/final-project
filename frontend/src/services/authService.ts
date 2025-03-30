@@ -1,9 +1,10 @@
-import {IAuthUser, IUser} from "../interfaces/user.interface.ts";
+import {IAuthUser, ICreateManager, IUser} from "../interfaces/user.interface.ts";
 import {urls} from "../constants/urls.ts";
 
 import {IRes} from "../types/responeType.ts";
 import {ITokenPair} from "../interfaces/token.interface.ts";
 import {apiService} from "./apiService.ts";
+import {IPassword} from "../interfaces/password.interface.ts";
 
 const accessTokenKey = "access"
 const refreshTokenKey = "refresh"
@@ -14,6 +15,25 @@ const authService = {
         const {user, tokens} = data as IAuthUser
         this.setTokens(tokens)
         return user
+    },
+
+    async signUpManager(body: ICreateManager): Promise<void> {
+        await apiService.post(urls.auth.signUpManager, body)
+    },
+
+    async sendEmailForActivate(userId: string): Promise<void> {
+        await apiService.post(urls.auth.sendEmailForActivate(userId))
+    },
+
+    async activateAccount(actionToken: string, body: IPassword): Promise<void> {
+        await apiService.patch(urls.auth.activateAccount(actionToken), body)
+    },
+    async sendEmailForRecoveryPassword(email: string): Promise<void> {
+        await apiService.post(urls.auth.sendEmailForRecoveryPassword, {email})
+    },
+
+    async recoveryPassword(actionToken: string, body: IPassword): Promise<void> {
+        await apiService.patch(urls.auth.recoveryPassword(actionToken), body)
     },
     me(): IRes<IUser> {
         return apiService.get(urls.auth.me)

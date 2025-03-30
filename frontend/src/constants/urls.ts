@@ -12,7 +12,12 @@ const urls = {
         login: `${auth}/sign-in`,
         me: `${auth}/me`,
         refresh: `${auth}/refresh`,
-        logOut: `${auth}/sign-out`
+        logOut: `${auth}/sign-out`,
+        signUpManager: `${auth}/sign-up/manager`,
+        sendEmailForActivate: (userId: string): string => `${auth}/activate?userId=${userId}`,
+        sendEmailForRecoveryPassword: `${auth}/recovery-password`,
+        activateAccount: (actionToken: string): string => `${auth}/activate/${actionToken}`,
+        recoveryPassword: (actionToken: string): string => `${auth}/recovery-password/${actionToken}`,
     },
     order: {
         getAll: (query: string): string =>  `${orders}${query}`,
@@ -27,7 +32,9 @@ const urls = {
         createGroup: groups
     },
     user: {
-        getAllManagers: users
+        getAllManagers: users,
+        bannedById: (userId: string): string => `${users}/banned/${userId}`,
+        unbannedById: (userId: string): string => `${users}/unbanned/${userId}`
     }
 }
 

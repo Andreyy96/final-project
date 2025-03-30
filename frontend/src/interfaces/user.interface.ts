@@ -18,6 +18,13 @@ export interface IAuthUser {
     tokens: ITokenPair
 }
 
+export interface ICreateManager {
+    email: string;
+    name: string;
+    surname: string;
+}
+
+
 export interface IManagerInfo {
 	_id: string;
 	id: number;
