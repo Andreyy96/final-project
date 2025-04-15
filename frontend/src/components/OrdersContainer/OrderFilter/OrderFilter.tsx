@@ -68,8 +68,12 @@ const OrderFilter = () => {
 
     const setQ:SubmitHandler<IQueryFilterOrder> = async (queries) => {
         for (const element in queries) {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             if (queries[element] && !queries[element].includes("all")) {
                 setQuery(prev => {
+                    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+                    // @ts-expect-error
                     prev.set(element, queries[element])
                     prev.delete("page")
                     return prev

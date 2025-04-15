@@ -9,6 +9,7 @@ import Box from "@mui/material/Box";
 import {useState} from "react";
 import {authActions} from "../../../store/slices/authSlice.ts";
 import {ICreateManager} from "../../../interfaces/user.interface.ts";
+import {useAppSelector} from "../../../hooks/useAppSelector.ts";
 
 const ModalWindow = () => {
 
@@ -23,13 +24,19 @@ const ModalWindow = () => {
     }
     const handleClose = () => {
         reset()
+        dispatch(authActions.setCreateManagerError())
         setOpen(false)
     };
+
+    const {createManagerError} = useAppSelector(state => state.auth)
     const dispatch = useAppDispatch()
 
     const createManager:SubmitHandler<ICreateManager> = async (body) => {
-        await dispatch(authActions.signUpManager({body}))
-        handleClose()
+        const {meta: {requestStatus}} = await dispatch(authActions.signUpManager({body}))
+        if (requestStatus==='fulfilled'){
+            handleClose()
+        }
+
     }
 
 
@@ -46,7 +53,7 @@ const ModalWindow = () => {
                     <form onSubmit={handleSubmit(createManager)}>
                         <div>
                             <label className={css.form_item}>Email
-                                <input className={errors.email && css.border_red} type="text"
+                                <input className={(errors.email || createManagerError) && css.border_red} type="text"
                                        placeholder={'Email'} {...register('email')}/>
                                 {errors.email && <p>{errors.email.message}</p>}
                             </label>
@@ -65,7 +72,7 @@ const ModalWindow = () => {
                                 {errors.surname && <p>{errors.surname.message}</p>}
                             </label>
                         </div>
-
+                        {createManagerError && <p>{createManagerError}</p>}
                         <div className={css.button_container}>
                             <button className={css.button_item} onClick={handleClose}>CANCEL</button>
                             <button className={css.button_item}>CREATE</button>

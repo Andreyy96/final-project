@@ -1,26 +1,31 @@
 import dotenv from "dotenv";
 
-dotenv.config({path: "./.env"});
+import { IConfig } from "./config.interface";
 
-export const configs = {
-    APP_PORT: process.env.APP_PORT || 3000,
-    APP_HOST: process.env.APP_HOST,
-    FRONT_URL: process.env.FRONT_URL,
+dotenv.config({ path: "./.env" });
 
-    MONGO_URI: process.env.MONGO_URI,
+const configs: IConfig = {
+  APP_PORT: process.env.APP_PORT || 3000,
+  APP_HOST: process.env.APP_HOST,
+  FRONT_URL: process.env.FRONT_URL,
 
-    JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
-    JWT_ACCESS_EXPIRATION: process.env.JWT_ACCESS_EXPIRATION,
-    JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
-    JWT_REFRESH_EXPIRATION: process.env.JWT_REFRESH_EXPIRATION,
+  MONGO_URI: process.env.MONGO_URI,
 
-    ACTION_RECOVERY_PASSWORD_SECRET: process.env.ACTION_RECOVERY_PASSWORD_SECRET,
-    ACTION_RECOVERY_PASSWORD_EXPIRATION: process.env.ACTION_RECOVERY_PASSWORD_EXPIRATION,
-    ACTION_ACTIVATE_SECRET: process.env.ACTION_ACTIVATE_SECRET,
-    ACTION_ACTIVATE_EXPIRATION: process.env.ACTION_ACTIVATE_EXPIRATION,
+  JWT_ACCESS_SECRET: process.env.JWT_ACCESS_SECRET,
+  JWT_ACCESS_EXPIRATION: process.env.JWT_ACCESS_EXPIRATION,
+  JWT_REFRESH_SECRET: process.env.JWT_REFRESH_SECRET,
+  JWT_REFRESH_EXPIRATION: process.env.JWT_REFRESH_EXPIRATION,
 
-    SMTP_EMAIL: process.env.SMTP_EMAIL,
-    SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+  ACTION_RECOVERY_PASSWORD_SECRET: process.env.ACTION_RECOVERY_PASSWORD_SECRET,
+  ACTION_RECOVERY_PASSWORD_EXPIRATION:
+    process.env.ACTION_RECOVERY_PASSWORD_EXPIRATION,
+  ACTION_ACTIVATE_SECRET: process.env.ACTION_ACTIVATE_SECRET,
+  ACTION_ACTIVATE_EXPIRATION: process.env.ACTION_ACTIVATE_EXPIRATION,
 
-    HASH_ROUNDS: process.env.HASH_ROUNDS,
-}
+  SMTP_EMAIL: process.env.SMTP_EMAIL,
+  SMTP_PASSWORD: process.env.SMTP_PASSWORD,
+
+  HASH_ROUNDS: process.env.HASH_ROUNDS,
+};
+
+export { configs };

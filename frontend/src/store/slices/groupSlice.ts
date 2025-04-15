@@ -7,11 +7,13 @@ import {IGroup} from "../../interfaces/group.interface.ts";
 interface IState {
     groups: IGroup[]
     groupTrigger: boolean
+    createGroupError: string
 }
 
 const initialState: IState = {
     groups: [],
-    groupTrigger: false
+    groupTrigger: false,
+    createGroupError: null,
 }
 
 const getAll = createAsyncThunk<IGroup[], void>(
@@ -49,7 +51,12 @@ const groupSlice = createSlice({
         .addCase(getAll.fulfilled, (state, action) => {
             state.groups = action.payload
         })
+        .addCase(createGroup.rejected, (state, action) => {
+            state.createGroupError = action.payload as string
+        })
+
         .addMatcher(isFulfilled(createGroup), state =>{
+            state.createGroupError = null
             state.groupTrigger = !state.groupTrigger
         })
 

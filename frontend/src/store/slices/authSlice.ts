@@ -7,6 +7,7 @@ import {IPassword} from "../../interfaces/password.interface.ts";
 interface IState {
     loginError: string
     passwordError: string
+    createManagerError: string
     currentUser: IUser
     createUserTrigger: boolean
 }
@@ -14,6 +15,7 @@ interface IState {
 const initialState: IState = {
     loginError: null,
     passwordError: null,
+    createManagerError: null,
     currentUser: null,
     createUserTrigger: null
 }
@@ -115,7 +117,11 @@ const me = createAsyncThunk<IUser, void>(
 const authSlice = createSlice({
     name: "authSlice",
     initialState,
-    reducers: {},
+    reducers: {
+        setCreateManagerError: (state) => {
+            state.createManagerError = null
+        }
+    },
     extraReducers: builder => builder
         .addCase(login.fulfilled, (state, action) => {
             state.currentUser = action.payload
@@ -129,11 +135,17 @@ const authSlice = createSlice({
         .addCase(recoveryPassword.rejected, (state, action) => {
             state.passwordError = action.payload as string
         })
+        .addCase(signUpManager.rejected, (state, action) => {
+            state.createManagerError = action.payload as string
+        })
         .addCase(me.fulfilled, (state, action) => {
             state.currentUser = action.payload
         })
         .addMatcher(isFulfilled(login), state => {
             state.loginError = null
+        })
+        .addMatcher(isFulfilled(signUpManager), state => {
+            state.createManagerError = null
         })
         .addMatcher(isFulfilled(signUpManager), state => {
             state.createUserTrigger = !state.createUserTrigger

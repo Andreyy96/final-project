@@ -18,11 +18,11 @@ interface IProps {
 
 const ModalWindow:FC<IProps> = ({order}) => {
     const [selectOrText, setSelectOrText] = useState<boolean>(true)
-    const {register, handleSubmit, setValue, formState: {errors}} = useForm<IUpdateDtoOrder>({
+    const {register, handleSubmit, setValue, formState: {errors}, resetField} = useForm<IUpdateDtoOrder>({
         mode: "onSubmit",
         resolver: joiResolver(orderValidator)
     });
-    const {groups} = useAppSelector(state => state.group)
+    const {groups, createGroupError} = useAppSelector(state => state.group)
     const [open, setOpen] = useState<boolean>(false);
     const {currentUser} = useAppSelector(state => state.auth)
     const handleOpen = () => setOpen(true);
@@ -60,23 +60,35 @@ const ModalWindow:FC<IProps> = ({order}) => {
         }
         if (order.status) {
             setValue("status", order.status)
+        } else {
+            setValue("status", "In work")
         }
-        if (order.group) {
+        if (order.group && selectOrText) {
             setValue("group", order.group)
+        } else {
+            resetField("group")
         }
     }, [order, setValue, selectOrText]);
 
     const updateOrder:SubmitHandler<IUpdateDtoOrder> = async (dto,event: BaseSyntheticEvent) => {
+        // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+        // @ts-expect-error
         if (event.nativeEvent.submitter === updateBtn.current) {
             await dispatch(orderActions.updateById({ id: order._id.toString(), dto}))
             handleClose()
         } else {
+            // eslint-disable-next-line @typescript-eslint/ban-ts-comment
+            // @ts-expect-error
             if(event.nativeEvent.submitter === changerBtn.current) {
-                        setSelectOrText(prevState => !prevState)
-                    } else {
-                        await dispatch(groupActions.createGroup({name: dto.group}))
-                        setSelectOrText(prevState => !prevState)
-                    }
+                setSelectOrText(prevState => !prevState)
+
+
+            } else {
+                const {meta: {requestStatus}} = await dispatch(groupActions.createGroup({name: dto.group}))
+                if (requestStatus==='fulfilled'){
+                    setSelectOrText(prevState => !prevState)
+                }
+            }
         }
     }
 
@@ -95,7 +107,7 @@ const ModalWindow:FC<IProps> = ({order}) => {
                     <form name={"update_order"} onSubmit={handleSubmit(updateOrder)} className={css.updateForm}>
                         <div className={css.margin_top}>
                             <label className={css.form_item}>Group
-                                {selectOrText || order.group ?
+                                {selectOrText ?
                                     <>
                                         <select name="group" {...register("group")}>
                                             <option value="">null</option>
@@ -106,9 +118,9 @@ const ModalWindow:FC<IProps> = ({order}) => {
                                     </>
                                     :
                                     <>
-                                        <input type="text" name={"group"}
+                                        <input className={createGroupError && css.border_red} type="text" name={"group"}
                                                placeholder={'group'} {...register('group')} />
-
+                                        {createGroupError && <p>{createGroupError}</p>}
                                         <div className={css.button_group_container}>
                                             <button ref={addBtn} type={"submit"}>add group</button>
                                             <button ref={changerBtn}>select</button>

@@ -1,13 +1,13 @@
 {
   "name": "backend",
   "version": "1.0.0",
+  "type": "module",
   "description": "",
-  "main": "src/index.ts",
+  "main": "index.ts",
   "scripts": {
     "start:dev": "rimraf dist && tsc-watch --onSuccess \"npm run watch:server\"",
-    "watch:server": "nodemon --exec ts-node src/index.ts",
-    "start": "node ./dist/main.js",
-    "prepare": "husky"
+    "watch:server": "tsx src/index.ts --watch",
+    "start": "node ./dist/src/index.js"
   },
   "author": "",
   "license": "ISC",
@@ -37,17 +37,11 @@
     "eslint-plugin-import": "^2.31.0",
     "eslint-plugin-prettier": "^5.2.3",
     "eslint-plugin-simple-import-sort": "^12.1.1",
-    "husky": "^9.1.7",
     "joi": "^17.13.3",
-    "lint-staged": "^15.4.3",
-    "nodemon": "^3.1.9",
     "prettier": "^3.4.2",
     "rimraf": "^6.0.1",
-    "ts-node": "^10.9.2",
     "tsc-watch": "^6.2.1",
-    "typescript": "^5.7.3"
-  },
-  "lint-staged": {
-    "{src,apps,libs,test}/**/*.ts": "eslint --fix"
+    "typescript": "^5.7.3",
+    "tsx": "^4.19.3"
   }
 }

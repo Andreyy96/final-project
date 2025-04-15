@@ -54,11 +54,7 @@ $ npm install
 
 ## Env File
 
-- all configurations are in the main folder in the .env file
-
-## Problems
-
-- eslint and husky do not work
+- all configurations are in the main folder in the backend/.env file
 
 ## Running the app
 

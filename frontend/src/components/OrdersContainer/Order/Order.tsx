@@ -18,7 +18,7 @@ interface IProps {
 
 const Order: FC<IProps> = ({order, index}) => {
     // const [trigger, setTrigger] = useState<boolean>(false)
-    const {register, handleSubmit, reset, formState: {errors, isValid}} = useForm<{comment: string}>({
+    const {register, handleSubmit, reset, formState: {errors}} = useForm<{comment: string}>({
         mode: "onSubmit",
         resolver: joiResolver(commentValidator)
     })
