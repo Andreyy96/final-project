@@ -64,10 +64,3 @@ const start = async () => {
 };
 
 start();
-
-// app.listen(configs.APP_PORT, async () => {
-//     await mongoose.connect(configs.MONGO_URI);
-//     console.log(
-//         `Server is running on http://localhost:${configs.APP_PORT}`,
-//     );
-// });

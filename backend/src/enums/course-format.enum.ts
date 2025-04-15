@@ -1,4 +1,4 @@
 export enum CourseFormatEnum {
-    ONLINE = "online",
-    STATIC = "static"
+  ONLINE = "online",
+  STATIC = "static",
 }

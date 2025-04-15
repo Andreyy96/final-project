@@ -1,199 +1,194 @@
-import {ITokenPair, ITokenPayload} from "../interfaces/token.interface";
-
-import {IDTOUser, IUser} from "../interfaces/user.interface";
-import {userRepository} from "../repositories/user.repository";
-import {ApiError} from "../errors/api-error";
-import {accessTokenRepository} from "../repositories/access-token.repository";
-import {refreshTokenRepository} from "../repositories/refresh-token.repository";
-import {tokenService} from "./token.service";
-import {passwordService} from "./password.service";
-import {UserRoleEnum} from "../enums/user-role.enum";
-import {ActionTokenTypeEnum} from "../enums/action-token-type.enum";
-import {actionTokenRepository} from "../repositories/action-token.repository";
-import {emailService} from "./email.service";
-import {EmailTypeEnum} from "../enums/email-type.enum";
-import {configs} from "../configs/config";
-import {userPresenter} from "../presenters/user.presenter";
+import { configs } from "../configs/config";
+import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
+import { EmailTypeEnum } from "../enums/email-type.enum";
+import { UserRoleEnum } from "../enums/user-role.enum";
+import { ApiError } from "../errors/api-error";
+import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
+import { IDTOUser, IUser } from "../interfaces/user.interface";
+import { userPresenter } from "../presenters/user.presenter";
+import { accessTokenRepository } from "../repositories/access-token.repository";
+import { actionTokenRepository } from "../repositories/action-token.repository";
+import { refreshTokenRepository } from "../repositories/refresh-token.repository";
+import { userRepository } from "../repositories/user.repository";
+import { emailService } from "./email.service";
+import { passwordService } from "./password.service";
+import { tokenService } from "./token.service";
 
 class AuthService {
+  public async signIn(
+    user: IUser,
+  ): Promise<{ user: IUser; tokens: ITokenPair }> {
+    await this.deleteTokens(user._id);
 
-    public async signIn(
-        user: IUser
-    ): Promise<{ user: IUser; tokens: ITokenPair }> {
+    const tokens = tokenService.generateTokens({
+      userId: user._id,
+      role: user.role,
+    });
 
-       await this.deleteTokens(user._id)
+    await this.createTokens(user._id, tokens);
 
-        const tokens = tokenService.generateTokens({
-            userId: user._id,
-            role: user.role,
-        });
+    const updateUser = await userRepository.updateLastLoginById(user._id);
 
-        await this.createTokens(user._id, tokens)
+    return { user: updateUser, tokens };
+  }
 
-        const updateUser = await userRepository.updateLastLoginById(user._id)
-
-        return {user: updateUser, tokens};
+  public async getMe(jwtPayload: ITokenPayload): Promise<Partial<IUser>> {
+    const user = await userRepository.getById(jwtPayload.userId);
+    if (!user) {
+      throw new ApiError("User not found", 421);
     }
 
-    public async getMe(jwtPayload: ITokenPayload): Promise<Partial<IUser>>{
-        const user = await userRepository.getById(jwtPayload.userId)
-        if (!user) {
-            throw new ApiError("User not found", 421)
-        }
+    return userPresenter.toPublicResDto(user);
+  }
 
-        return userPresenter.toPublicResDto(user)
+  public async createManager(dto: IDTOUser): Promise<IUser> {
+    await this.isEmailExistOrThrow(dto.email);
+    const [user] = await userRepository.getLustUser();
+    return await userRepository.create({
+      id: user.id + 1,
+      name: dto.name,
+      surname: dto.surname,
+      email: dto.email,
+      role: UserRoleEnum.MANAGER,
+    });
+  }
+
+  public async activateAccountSendEmail(
+    jwtPayload: ITokenPayload,
+    userId: string,
+  ): Promise<void> {
+    const user = await userRepository.getById(userId);
+
+    if (!user) {
+      throw new ApiError("User not found", 404);
     }
 
-    public async createManager(
-        dto: IDTOUser,
-    ): Promise<IUser> {
-        await this.isEmailExistOrThrow(dto.email);
-        const [user] = await userRepository.getLustUser()
-        return await userRepository.create({
-            id: user.id + 1,
-            name: dto.name,
-            surname: dto.surname,
-            email: dto.email,
-            role: UserRoleEnum.MANAGER,
-        });
+    const token = tokenService.generateActionTokens(
+      { userId: user._id, role: user.role },
+      ActionTokenTypeEnum.ACTIVATE,
+    );
+
+    await actionTokenRepository.create({
+      type: ActionTokenTypeEnum.ACTIVATE,
+      _userId: user._id,
+      token,
+    });
+
+    await emailService.sendMail(EmailTypeEnum.ACTIVATE, user.email, {
+      frontUrl: configs.FRONT_URL,
+      actionToken: token,
+    });
+  }
+
+  public async activateAccount(
+    jwtPayload: ITokenPayload,
+    dto: { password: string; confirm_password: string },
+  ): Promise<void> {
+    const password = await passwordService.hashPassword(dto.password);
+    await userRepository.updateById(jwtPayload.userId, { password });
+
+    await actionTokenRepository.deleteByParams({
+      _userId: jwtPayload.userId,
+      type: ActionTokenTypeEnum.ACTIVATE,
+    });
+  }
+
+  public async recoveryPasswordSendEmail(email: string): Promise<void> {
+    const user = await userRepository.getByEmail(email);
+
+    if (!user) {
+      throw new ApiError("User not found", 404);
     }
 
-    public async activateAccountSendEmail(
-        jwtPayload: ITokenPayload,
-        userId: string
-    ): Promise<void> {
-        const user = await userRepository.getById(userId);
-
-        if (!user) {
-            throw new ApiError("User not found", 404);
-        }
-
-        const token = tokenService.generateActionTokens(
-            { userId: user._id,  role: user.role },
-            ActionTokenTypeEnum.ACTIVATE,
-        );
-
-        await actionTokenRepository.create({
-            type: ActionTokenTypeEnum.ACTIVATE,
-            _userId: user._id,
-            token,
-        });
-
-        await emailService.sendMail(EmailTypeEnum.ACTIVATE, user.email, {
-            frontUrl:  configs.FRONT_URL,
-            actionToken: token
-        })
+    if (!user.is_active) {
+      throw new ApiError("Manager must activate account", 403);
     }
 
-    public async activateAccount(
-        jwtPayload: ITokenPayload,
-        dto: { password: string, confirm_password: string}
-    ): Promise<void> {
-        const password = await passwordService.hashPassword(dto.password);
-        await userRepository.updateById(jwtPayload.userId, { password });
+    const token = tokenService.generateActionTokens(
+      { userId: user._id, role: user.role },
+      ActionTokenTypeEnum.RECOVERY_PASSWORD,
+    );
+    await actionTokenRepository.create({
+      type: ActionTokenTypeEnum.RECOVERY_PASSWORD,
+      _userId: user._id,
+      token,
+    });
 
-        await actionTokenRepository.deleteByParams({
-            _userId: jwtPayload.userId,
-            type: ActionTokenTypeEnum.ACTIVATE,
-        });
+    await emailService.sendMail(EmailTypeEnum.RECOVERY_PASSWORD, user.email, {
+      frontUrl: configs.FRONT_URL,
+      actionToken: token,
+    });
+  }
+
+  public async recoveryPasswordSet(
+    dto: { password: string; confirm_password: string },
+    jwtPayload: ITokenPayload,
+  ): Promise<void> {
+    const password = await passwordService.hashPassword(dto.password);
+    await userRepository.updatePasswordById(jwtPayload.userId, { password });
+
+    await actionTokenRepository.deleteByParams({
+      _userId: jwtPayload.userId,
+      type: ActionTokenTypeEnum.RECOVERY_PASSWORD,
+    });
+
+    await Promise.all([
+      accessTokenRepository.deleteByParams({ _userId: jwtPayload.userId }),
+      refreshTokenRepository.deleteByParams({ _userId: jwtPayload.userId }),
+    ]);
+  }
+
+  private async isEmailExistOrThrow(email: string): Promise<void> {
+    const user = await userRepository.getByEmail(email);
+    if (user) {
+      throw new ApiError("Email already exists", 409);
     }
+  }
 
-    public async recoveryPasswordSendEmail(email: string): Promise<void> {
-        const user = await userRepository.getByEmail(email);
+  public async refresh(jwtPayload: ITokenPayload): Promise<ITokenPair> {
+    await this.deleteTokens(jwtPayload.userId);
 
-        if (!user) {
-            throw new ApiError("User not found", 404);
-        }
+    const tokens = tokenService.generateTokens({
+      userId: jwtPayload.userId,
+      role: jwtPayload.role,
+    });
+    await this.createTokens(jwtPayload.userId, tokens);
 
-        if (!user.is_active) {
-            throw new ApiError("Manager must activate account", 403);
-        }
+    return tokens;
+  }
 
-        const token = tokenService.generateActionTokens(
-            { userId: user._id, role: user.role },
-            ActionTokenTypeEnum.RECOVERY_PASSWORD,
-        );
-        await actionTokenRepository.create({
-            type: ActionTokenTypeEnum.RECOVERY_PASSWORD,
-            _userId: user._id,
-            token,
-        });
+  public async signOut(jwtPayload: ITokenPayload): Promise<void> {
+    const user = await userRepository.getById(jwtPayload.userId);
 
-        await emailService.sendMail(EmailTypeEnum.RECOVERY_PASSWORD, user.email, {
-            frontUrl: configs.FRONT_URL,
-            actionToken: token,
-        });
-    }
+    await this.deleteTokens(user._id);
+  }
 
-    public async recoveryPasswordSet(
-        dto: { password: string, confirm_password: string },
-        jwtPayload: ITokenPayload,
-    ): Promise<void> {
-        const password = await passwordService.hashPassword(dto.password);
-        await userRepository.updatePasswordById(jwtPayload.userId, { password });
+  private async createTokens(
+    _userId: string,
+    tokens: ITokenPair,
+  ): Promise<void> {
+    await Promise.all([
+      accessTokenRepository.create({
+        accessToken: tokens.accessToken,
+        _userId,
+      }),
+      refreshTokenRepository.create({
+        refreshToken: tokens.refreshToken,
+        _userId,
+      }),
+    ]);
+  }
 
-        await actionTokenRepository.deleteByParams({
-            _userId: jwtPayload.userId,
-            type: ActionTokenTypeEnum.RECOVERY_PASSWORD,
-        });
-
-        await Promise.all([
-            accessTokenRepository.deleteByParams({_userId: jwtPayload.userId}),
-            refreshTokenRepository.deleteByParams({_userId: jwtPayload.userId})
-        ])
-    }
-
-    private async isEmailExistOrThrow(email: string): Promise<void> {
-        const user = await userRepository.getByEmail(email);
-        if (user) {
-            throw new ApiError("Email already exists", 409);
-        }
-    }
-
-
-    public async refresh(
-        jwtPayload: ITokenPayload,
-    ): Promise<ITokenPair> {
-        await this.deleteTokens(jwtPayload.userId)
-
-        const tokens = tokenService.generateTokens({
-            userId: jwtPayload.userId,
-            role: jwtPayload.role,
-        });
-        await this.createTokens(jwtPayload.userId, tokens)
-
-        return tokens;
-    }
-
-    public async signOut(jwtPayload: ITokenPayload): Promise<void> {
-        const user = await userRepository.getById(jwtPayload.userId);
-
-        await this.deleteTokens(user._id)
-    }
-
-    private async createTokens(_userId: string, tokens: ITokenPair): Promise<void> {
-        await Promise.all([
-            accessTokenRepository.create({
-                accessToken: tokens.accessToken,
-                _userId,
-            }),
-            refreshTokenRepository.create({
-               refreshToken: tokens.refreshToken,
-               _userId,
-            })
-        ])
-    }
-
-    private async deleteTokens(_userId: string): Promise<void> {
-        await Promise.all([
-            accessTokenRepository.deleteByParams({
-                _userId
-            }),
-            refreshTokenRepository.deleteByParams({
-                _userId
-            })
-        ])
-    }
+  private async deleteTokens(_userId: string): Promise<void> {
+    await Promise.all([
+      accessTokenRepository.deleteByParams({
+        _userId,
+      }),
+      refreshTokenRepository.deleteByParams({
+        _userId,
+      }),
+    ]);
+  }
 }
 
 export const authService = new AuthService();
