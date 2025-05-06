@@ -20,7 +20,8 @@
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.9.5",
     "nodemailer": "^6.9.15",
-    "nodemailer-express-handlebars": "^6.1.2"
+    "nodemailer-express-handlebars": "^6.1.2",
+    "exceljs": "^4.4.0"
   },
   "devDependencies": {
     "@types/bcrypt": "^5.0.2",

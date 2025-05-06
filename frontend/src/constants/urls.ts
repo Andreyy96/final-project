@@ -23,6 +23,7 @@ const urls = {
         getAll: (query: string): string =>  `${orders}${query}`,
         updateById: (id: string): string => `${orders}/${id}`,
         getStatusStatistic: `${orders}/statistic`,
+        // downloadExcel: (query: string): string => `${orders}/excel_table${query}`,
     },
     comment: {
         postComment: (id: string): string => `${comments}/${id}`

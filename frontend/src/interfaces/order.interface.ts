@@ -50,7 +50,7 @@ export interface IOrderPagination {
 	page: number,
 	total: number,
 	limit: number,
-	result: IGeneralInfoOrder[]
+
 }
 
 export interface ISortOrder {

@@ -14,7 +14,8 @@ apiService.interceptors.request.use(req => {
 
     if (accessToken && req.url !== urls.auth.refresh) {
         req.headers.Authorization = `Bearer ${accessToken}`
-    } else {
+    }
+    else {
         req.headers.Authorization = `Bearer ${refreshToken}`
     }
     return req

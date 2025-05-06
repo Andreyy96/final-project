@@ -15,7 +15,7 @@ import { Order } from "../models/order.model";
 class OrderRepository {
   public async getListNoAggregation(
     query: IQuery,
-  ): Promise<[IOrder[], number, number, IGeneralInfoOrder[]]> {
+  ): Promise<[IOrder[], number, number]> {
     const page = query.page ? query.page : 1;
     const filterObj = this.getFilterObj(query);
 
@@ -24,13 +24,12 @@ class OrderRepository {
       Order.find(filterObj).limit(25).skip(skip).sort({ id: -1 }),
       Order.countDocuments(filterObj),
       25,
-      Order.find(filterObj),
     ]);
   }
 
   public async getSortListNoAggregation(
     query: IQuery,
-  ): Promise<[IOrder[], number, number, IGeneralInfoOrder[]]> {
+  ): Promise<[IOrder[], number, number]> {
     const page = query.page ? query.page : 1;
     const sortObj = this.getSortObj(query.order);
     const filterObj = this.getFilterObj(query);
@@ -40,7 +39,6 @@ class OrderRepository {
       Order.find(filterObj).limit(25).skip(skip).sort(sortObj),
       Order.countDocuments(filterObj),
       25,
-      Order.find(filterObj).sort(sortObj),
     ]);
   }
 
@@ -71,9 +69,7 @@ class OrderRepository {
     ]);
   }
 
-  public async getList(
-    query: IQuery,
-  ): Promise<[IOrder[], number, number, IGeneralInfoOrder[]]> {
+  public async getList(query: IQuery): Promise<[IOrder[], number, number]> {
     const page = query.page ? query.page : 1;
 
     const skip = 25 * (+page - 1);
@@ -104,13 +100,12 @@ class OrderRepository {
       ]).limit(25),
       Order.countDocuments(),
       25,
-      Order.find({}),
     ]);
   }
 
   public async getListByOrder(
     query: IQuery,
-  ): Promise<[IOrder[], number, number, IGeneralInfoOrder[]]> {
+  ): Promise<[IOrder[], number, number]> {
     const sortObj = this.getSortObj(query.order);
     const page = query.page ? query.page : 1;
 
@@ -142,7 +137,6 @@ class OrderRepository {
       ]).limit(25),
       Order.countDocuments(),
       25,
-      Order.find().sort(sortObj),
     ]);
   }
 
@@ -204,6 +198,35 @@ class OrderRepository {
       Order.countDocuments({ status: StatusEnum.NEW }),
       Order.countDocuments({ status: null }),
     ]);
+  }
+
+  public async getListForExcel(): Promise<IGeneralInfoOrder[]> {
+    return await Order.find({}).sort({ id: -1 });
+  }
+
+  public async getListForExcelByOrder(
+    query: IQuery,
+  ): Promise<IGeneralInfoOrder[]> {
+    const sortObj = this.getSortObj(query.order);
+
+    return await Order.find().sort(sortObj);
+  }
+
+  public async getSortListForExcel(
+    query: IQuery,
+  ): Promise<IGeneralInfoOrder[]> {
+    const sortObj = this.getSortObj(query.order);
+    const filterObj = this.getFilterObj(query);
+
+    return await Order.find(filterObj).sort(sortObj);
+  }
+
+  public async getFilterListForExcel(
+    query: IQuery,
+  ): Promise<IGeneralInfoOrder[]> {
+    const filterObj = this.getFilterObj(query);
+
+    return await Order.find(filterObj);
   }
 
   private getSortObj(order: string): Record<string, 1 | -1> {

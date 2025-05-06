@@ -1,7 +1,6 @@
 import {createAsyncThunk, createSlice, isFulfilled} from "@reduxjs/toolkit";
 import {AxiosError} from "axios";
 import {
-    IGeneralInfoOrder,
     IOrder,
     IOrderPagination,
     IStatusStatistic,
@@ -15,7 +14,6 @@ interface IState {
     total: number
     limit: number
     page: number
-    result: IGeneralInfoOrder[]
     status_statistic: IStatusStatistic
     order_tr: string
 }
@@ -26,7 +24,6 @@ const initialState: IState = {
     total: null,
     limit: null,
     page: null,
-    result: [],
     status_statistic: null,
     order_tr: null
 }
@@ -72,6 +69,19 @@ const updateById = createAsyncThunk<void, {id: string, dto: IUpdateDtoOrder}>(
     }
 )
 
+// const downloadExcel = createAsyncThunk<void, {query: string}>(
+//     "orderSlice/downloadExcel",
+//     async ({query}, thunkAPI) => {
+//         try {
+//             await orderService.downloadExcel(query)
+//         }
+//         catch (e) {
+//             const error = e as AxiosError
+//             return thunkAPI.rejectWithValue(error.response.data)
+//         }
+//     }
+// )
+
 
 const orderSlice = createSlice({
     name: "orderSlice",
@@ -87,7 +97,6 @@ const orderSlice = createSlice({
             state.page = action.payload.page
             state.limit = action.payload.limit
             state.total = action.payload.total
-            state.result = action.payload.result
         })
         .addCase(getStatusStatistic.fulfilled, (state, action) => {
             state.status_statistic = action.payload

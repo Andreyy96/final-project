@@ -1,5 +1,4 @@
 import {
-  IGeneralInfoOrder,
   IOrder,
   IOrderListResponse,
   IOrderResponse,
@@ -42,42 +41,17 @@ class OrderPresenter {
     };
   }
 
-  toGeneralPublicResDto(entity: IOrder): IGeneralInfoOrder {
-    return {
-      _id: entity._id,
-      id: entity.id,
-      name: entity.name ? entity.name : null,
-      surname: entity.surname ? entity.surname : null,
-      email: entity.email ? entity.email : null,
-      phone: entity.phone ? entity.phone : null,
-      age: entity.age ? entity.age : null,
-      course: entity.course ? entity.course : null,
-      course_format: entity.course_format ? entity.course_format : null,
-      course_type: entity.course_type ? entity.course_type : null,
-      sum: entity.sum ? entity.sum : null,
-      already_paid: entity.already_paid ? entity.already_paid : null,
-      group: entity.group ? entity.group : null,
-      status: entity.status ? entity.status : null,
-      msg: entity.msg ? entity.msg : null,
-      utm: entity.utm ? entity.utm : null,
-      created_at: entity.created_at,
-      manager: entity.manager ? entity.manager : null,
-    };
-  }
-
   public toListResDto(
     entities: IOrder[],
     total: number,
     limit: number,
     query: IQuery,
-    result: IGeneralInfoOrder[],
   ): IOrderListResponse {
     return {
       data: entities.map(this.toPublicResDto),
       page: query.page ? +query.page : 1,
       total,
       limit,
-      result: result.map(this.toGeneralPublicResDto),
     };
   }
 }

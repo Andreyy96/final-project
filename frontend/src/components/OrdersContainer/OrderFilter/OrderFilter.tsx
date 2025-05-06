@@ -5,17 +5,18 @@ import {useAppSelector} from "../../../hooks/useAppSelector.ts";
 import {useEffect, useState} from "react";
 import {Replay, UploadFile} from "@mui/icons-material";
 import css from "./OrderFilter.module.css"
-import {useDownlandExcel} from "../../../hooks/useDownlandExcel.ts";
 import {Group} from "../../GroupsContainer/Group/Group.tsx";
+import {useAppLocation} from "../../../hooks/useAppLocation.ts";
+import {baseURL} from "../../../constants/urls.ts";
+import {authService} from "../../../services/authService.ts";
 
 const OrderFilter = () => {
+    const {search} = useAppLocation()
     const {register, handleSubmit, setValue, reset} = useForm<IQueryFilterOrder>();
     const [startTrigger, setStartTrigger] = useState<boolean>(false)
     const [endTrigger, setEndTrigger] = useState<boolean>(false)
-    const {result} = useAppSelector(state => state.order)
     const {groups} = useAppSelector(state => state.group)
 
-    const {objUrl, downlandExcel} = useDownlandExcel()
 
     const {currentUser} = useAppSelector(state => state.auth)
     const [query, setQuery] = useSearchParams();
@@ -63,8 +64,7 @@ const OrderFilter = () => {
         } else {
             setValue("manager", false)
         }
-        downlandExcel(result)
-    }, [query, setValue, result]);
+    }, [query, setValue]);
 
     const setQ:SubmitHandler<IQueryFilterOrder> = async (queries) => {
         for (const element in queries) {
@@ -107,6 +107,16 @@ const OrderFilter = () => {
             prev.delete("page")
             return prev
         })
+    }
+
+    const downlandFile = async () => {
+        const accessToken = authService.getAccessToken()
+        if(search) {
+            window.open(`${baseURL}/orders/excel_table${search}&accessToken=${accessToken}`)
+        } else {
+            window.open(`${baseURL}/orders/excel_table?accessToken=${accessToken}`)
+
+        }
     }
 
     return (
@@ -152,17 +162,21 @@ const OrderFilter = () => {
                         <option value="">all groups</option>
                         {groups.map(group => <Group group={group} key={group._id}/>)}
                     </select>
-                    <input className={css.form_input_data} type={startTrigger ? "date" : "text"} onClick={() => setStartTrigger(true)} placeholder={'Start_date'} {...register('start_date')}/>
-                    <input className={css.form_input_data} type={endTrigger ? "date" : "text"} onClick={() => setEndTrigger(true)} placeholder={'End_date'} {...register('end_date')}/>
+                    <input className={css.form_input_data} type={startTrigger ? "date" : "text"}
+                           onClick={() => setStartTrigger(true)}
+                           placeholder={'Start_date'} {...register('start_date')}/>
+                    <input className={css.form_input_data} type={endTrigger ? "date" : "text"}
+                           onClick={() => setEndTrigger(true)} placeholder={'End_date'} {...register('end_date')}/>
                 </div>
                 <div className={css.form_button_div}>
                     <label>
-                        <input className={css.form_input_checkbox} type="checkbox" value={currentUser && currentUser.name || ""} {...register('manager')}/>
+                        <input className={css.form_input_checkbox} type="checkbox"
+                               value={currentUser && currentUser.name || ""} {...register('manager')}/>
                         My
                     </label>
-                    <button className={css.button_reset} formAction={resetTab}><Replay className={css.svg_reload}/></button>
-                    <a href={objUrl} download="orders_table.xlsx"><UploadFile/></a>
-
+                    <button className={css.button_reset} formAction={resetTab}><Replay className={css.svg_reload}/>
+                    </button>
+                    <button formAction={downlandFile}><UploadFile/></button>
                 </div>
             </form>
         </div>

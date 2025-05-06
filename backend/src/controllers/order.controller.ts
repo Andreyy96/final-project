@@ -45,6 +45,28 @@ class OrderController {
       next(e);
     }
   }
+
+  public async getExcel(req: Request, res: Response, next: NextFunction) {
+    try {
+      const query = req.query as unknown as IQuery;
+
+      const workbook = await orderService.getExcel(query);
+
+      res.setHeader(
+        "Content-Type",
+        "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
+      );
+
+      res.setHeader(
+        "Content-Disposition",
+        "attachment; filename=" + "data.xlsx",
+      );
+
+      await workbook.xlsx.write(res).then(() => res.end());
+    } catch (e) {
+      next(e);
+    }
+  }
 }
 
 export const orderController = new OrderController();

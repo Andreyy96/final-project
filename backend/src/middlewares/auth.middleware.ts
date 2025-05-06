@@ -41,6 +41,28 @@ class AuthMiddleware {
     }
   }
 
+  public async checkAccessTokenForExcel(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const accessToken = req.query.accessToken as string;
+      if (!accessToken) {
+        throw new ApiError("Token is not provided", 401);
+      }
+
+      const token = await accessTokenRepository.findByParams({ accessToken });
+
+      if (!token) {
+        throw new ApiError("Token is not valid", 401);
+      }
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+
   public async checkRefreshToken(
     req: Request,
     res: Response,

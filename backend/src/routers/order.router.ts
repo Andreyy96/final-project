@@ -23,6 +23,12 @@ router.get(
   orderController.getStatusStatisticList,
 );
 
+router.get(
+  "/excel_table",
+  authMiddleware.checkAccessTokenForExcel,
+  orderController.getExcel,
+);
+
 router.put(
   "/:orderId",
   authMiddleware.checkAccessToken,

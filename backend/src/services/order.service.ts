@@ -1,3 +1,5 @@
+import exceljs from "exceljs";
+
 import { StatusEnum } from "../enums/status.enum";
 import {
   IDTOOrder,
@@ -10,6 +12,7 @@ import { ITokenPayload } from "../interfaces/token.interface";
 import { orderPresenter } from "../presenters/order.presenter";
 import { orderRepository } from "../repositories/order.repository";
 import { userRepository } from "../repositories/user.repository";
+import { excelService } from "./excel.service";
 import { groupService } from "./group.service";
 
 class OrderService {
@@ -30,10 +33,10 @@ class OrderService {
         query.end_date) &&
       !query.order
     ) {
-      const [entries, total, limit, result] =
+      const [entries, total, limit] =
         await orderRepository.getListNoAggregation(query);
       const orders = await this.makeOneArray(entries);
-      return orderPresenter.toListResDto(orders, total, limit, query, result);
+      return orderPresenter.toListResDto(orders, total, limit, query);
     } else if (
       (query.name ||
         query.surname ||
@@ -50,18 +53,17 @@ class OrderService {
         query.end_date) &&
       query.order
     ) {
-      const [entries, total, limit, result] =
+      const [entries, total, limit] =
         await orderRepository.getSortListNoAggregation(query);
       const orders = await this.makeOneArray(entries);
-      return orderPresenter.toListResDto(orders, total, limit, query, result);
+      return orderPresenter.toListResDto(orders, total, limit, query);
     } else if (query.order) {
-      const [entities, total, limit, result] =
+      const [entities, total, limit] =
         await orderRepository.getListByOrder(query);
-      return orderPresenter.toListResDto(entities, total, limit, query, result);
+      return orderPresenter.toListResDto(entities, total, limit, query);
     } else {
-      const [entities, total, limit, result] =
-        await orderRepository.getList(query);
-      return orderPresenter.toListResDto(entities, total, limit, query, result);
+      const [entities, total, limit] = await orderRepository.getList(query);
+      return orderPresenter.toListResDto(entities, total, limit, query);
     }
   }
 
@@ -112,6 +114,11 @@ class OrderService {
     }
 
     return await orderRepository.updateById(dto, order, user);
+  }
+
+  public async getExcel(query: IQuery): Promise<exceljs.Workbook> {
+    const workbook = await excelService.getWorkbook(query);
+    return workbook;
   }
 
   private async makeOneArray(entities: IOrder[]): Promise<IOrder[]> {
