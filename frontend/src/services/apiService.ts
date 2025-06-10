@@ -39,7 +39,8 @@ apiService.interceptors.response.use(
                 catch (e) {
                     authService.deleteTokens()
                     isRefreshing = false
-                    await routes.navigate("/login")
+                    alert("Your session was expiration. Please login again")
+                    await routes.navigate("/login?sessionExpiration=true")
                     return Promise.reject(error)
                 }
             }

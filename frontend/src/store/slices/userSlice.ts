@@ -5,21 +5,27 @@ import {userService} from "../../services/userService.ts";
 
 interface IState {
     managers: IManagerWithStatistic[]
+    total: number
+    limit: number
+    page: number
     userTrigger: boolean
     createError: string
 }
 
 const initialState: IState = {
     managers: [],
+    total: null,
+    limit: null,
+    page: null,
     userTrigger: false,
     createError: null
 }
 
-const getAllManagers = createAsyncThunk<IManagerRes>(
+const getAllManagers = createAsyncThunk<IManagerRes, {query: string}>(
     "userSlice/getAllManagers",
-    async (_, thunkAPI) => {
+    async ({query}, thunkAPI) => {
         try {
-            const {data} = await userService.getAllManagers()
+            const {data} = await userService.getAllManagers(query)
             return data
         }
         catch (e) {
@@ -65,6 +71,9 @@ const userSlice = createSlice({
     extraReducers: builder => builder
         .addCase(getAllManagers.fulfilled, (state, action) => {
             state.managers = action.payload.data
+            state.page = action.payload.page
+            state.limit = action.payload.limit
+            state.total = action.payload.total
         })
         .addMatcher(isFulfilled(bannedById, unbannedById), state =>{
             state.userTrigger = !state.userTrigger

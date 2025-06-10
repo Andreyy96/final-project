@@ -56,13 +56,13 @@ class OrderController {
         "Content-Type",
         "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
       );
-
       res.setHeader(
         "Content-Disposition",
-        "attachment; filename=" + "data.xlsx",
+        `attachment; filename="orders.xlsx"`,
       );
 
-      await workbook.xlsx.write(res).then(() => res.end());
+      await workbook.xlsx.write(res);
+      res.end();
     } catch (e) {
       next(e);
     }

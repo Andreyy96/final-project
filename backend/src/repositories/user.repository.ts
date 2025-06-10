@@ -2,68 +2,134 @@ import dayjs from "dayjs";
 
 import { StatusEnum } from "../enums/status.enum";
 import { UserRoleEnum } from "../enums/user-role.enum";
+import { IQuery } from "../interfaces/query.interface";
 import { IUser, IUserWithStatistic } from "../interfaces/user.interface";
 import { User } from "../models/user.model";
 
 class UserRepository {
-  public async getManagerList(): Promise<IUserWithStatistic[]> {
-    return await User.aggregate([
-      {
-        $match: { role: UserRoleEnum.MANAGER },
-      },
-      {
-        $lookup: {
-          from: "orders",
-          let: { userId: "$_id" },
-          as: "total",
-          pipeline: [{ $match: { $expr: { $eq: ["$_userId", "$$userId"] } } }],
+  public async getManagerList(
+    query: IQuery,
+  ): Promise<[IUserWithStatistic[], number, number]> {
+    const page = query.page ? query.page : 1;
+
+    const skip = 10 * (+page - 1);
+
+    // return await User.aggregate([
+    //   {
+    //     $lookup: {
+    //       from: "orders",
+    //       let: { userId: "$_id" },
+    //       as: "total",
+    //       pipeline: [{ $match: { $expr: { $eq: ["$_userId", "$$userId"] } } }],
+    //     },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "orders",
+    //       let: { userId: "$_id" },
+    //       as: "in_work",
+    //       pipeline: [
+    //         { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+    //         { $match: { status: { $eq: StatusEnum.IN_WORK } } },
+    //       ],
+    //     },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "orders",
+    //       let: { userId: "$_id" },
+    //       as: "agree",
+    //       pipeline: [
+    //         { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+    //         { $match: { status: { $eq: StatusEnum.AGREE } } },
+    //       ],
+    //     },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "orders",
+    //       let: { userId: "$_id" },
+    //       as: "disagree",
+    //       pipeline: [
+    //         { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+    //         { $match: { status: { $eq: StatusEnum.DISAGREE } } },
+    //       ],
+    //     },
+    //   },
+    //   {
+    //     $lookup: {
+    //       from: "orders",
+    //       let: { userId: "$_id" },
+    //       as: "dubbing",
+    //       pipeline: [
+    //         { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+    //         { $match: { status: { $eq: StatusEnum.DUBBING } } },
+    //       ],
+    //     },
+    //   },
+    //   { $sort: { createdAt: -1 } },
+    // ]);
+    return await Promise.all([
+      User.aggregate([
+        {
+          $lookup: {
+            from: "orders",
+            let: { userId: "$_id" },
+            as: "total",
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+            ],
+          },
         },
-      },
-      {
-        $lookup: {
-          from: "orders",
-          let: { userId: "$_id" },
-          as: "in_work",
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
-            { $match: { status: { $eq: StatusEnum.IN_WORK } } },
-          ],
+        {
+          $lookup: {
+            from: "orders",
+            let: { userId: "$_id" },
+            as: "in_work",
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+              { $match: { status: { $eq: StatusEnum.IN_WORK } } },
+            ],
+          },
         },
-      },
-      {
-        $lookup: {
-          from: "orders",
-          let: { userId: "$_id" },
-          as: "agree",
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
-            { $match: { status: { $eq: StatusEnum.AGREE } } },
-          ],
+        {
+          $lookup: {
+            from: "orders",
+            let: { userId: "$_id" },
+            as: "agree",
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+              { $match: { status: { $eq: StatusEnum.AGREE } } },
+            ],
+          },
         },
-      },
-      {
-        $lookup: {
-          from: "orders",
-          let: { userId: "$_id" },
-          as: "disagree",
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
-            { $match: { status: { $eq: StatusEnum.DISAGREE } } },
-          ],
+        {
+          $lookup: {
+            from: "orders",
+            let: { userId: "$_id" },
+            as: "disagree",
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+              { $match: { status: { $eq: StatusEnum.DISAGREE } } },
+            ],
+          },
         },
-      },
-      {
-        $lookup: {
-          from: "orders",
-          let: { userId: "$_id" },
-          as: "dubbing",
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
-            { $match: { status: { $eq: StatusEnum.DUBBING } } },
-          ],
+        {
+          $lookup: {
+            from: "orders",
+            let: { userId: "$_id" },
+            as: "dubbing",
+            pipeline: [
+              { $match: { $expr: { $eq: ["$_userId", "$$userId"] } } },
+              { $match: { status: { $eq: StatusEnum.DUBBING } } },
+            ],
+          },
         },
-      },
-      { $sort: { createdAt: -1 } },
+        { $sort: { createdAt: -1 } },
+        { $skip: skip },
+      ]).limit(10),
+      User.countDocuments(),
+      10,
     ]);
   }
 

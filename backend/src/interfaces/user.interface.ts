@@ -61,4 +61,7 @@ export interface IDTOUser {
 
 export interface IManagerListResponse {
   data: IResUser[];
+  page: number;
+  total: number;
+  limit: number;
 }

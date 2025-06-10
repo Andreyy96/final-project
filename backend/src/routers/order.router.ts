@@ -25,7 +25,7 @@ router.get(
 
 router.get(
   "/excel_table",
-  authMiddleware.checkAccessTokenForExcel,
+  authMiddleware.checkAccessToken,
   orderController.getExcel,
 );
 

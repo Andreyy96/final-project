@@ -7,6 +7,7 @@ import {
     IUpdateDtoOrder
 } from "../../interfaces/order.interface.ts";
 import {orderService} from "../../services/orderService.ts";
+import {saveAs} from "file-saver";
 
 interface IState {
     orderTrigger: boolean
@@ -18,6 +19,7 @@ interface IState {
     order_tr: string
 }
 
+
 const initialState: IState = {
     orderTrigger: false,
     orders: [],
@@ -25,7 +27,7 @@ const initialState: IState = {
     limit: null,
     page: null,
     status_statistic: null,
-    order_tr: null
+    order_tr: null,
 }
 
 const getAll = createAsyncThunk<IOrderPagination, {query: string}>(
@@ -69,18 +71,19 @@ const updateById = createAsyncThunk<void, {id: string, dto: IUpdateDtoOrder}>(
     }
 )
 
-// const downloadExcel = createAsyncThunk<void, {query: string}>(
-//     "orderSlice/downloadExcel",
-//     async ({query}, thunkAPI) => {
-//         try {
-//             await orderService.downloadExcel(query)
-//         }
-//         catch (e) {
-//             const error = e as AxiosError
-//             return thunkAPI.rejectWithValue(error.response.data)
-//         }
-//     }
-// )
+const downloadExcel = createAsyncThunk<void, {query: string}>(
+    "orderSlice/downloadExcel",
+    async ({query}, thunkAPI) => {
+        try {
+            const {data} = await orderService.downloadExcel(query)
+            saveAs(data, "orders.xlsx")
+        }
+        catch (e) {
+            const error = e as AxiosError
+            return thunkAPI.rejectWithValue(error.response.data)
+        }
+    }
+)
 
 
 const orderSlice = createSlice({
@@ -112,7 +115,8 @@ const orderActions = {
     ...actions,
     getAll,
     updateById,
-    getStatusStatistic
+    getStatusStatistic,
+    downloadExcel
 }
 
 export {

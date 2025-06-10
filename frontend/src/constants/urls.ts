@@ -23,7 +23,7 @@ const urls = {
         getAll: (query: string): string =>  `${orders}${query}`,
         updateById: (id: string): string => `${orders}/${id}`,
         getStatusStatistic: `${orders}/statistic`,
-        // downloadExcel: (query: string): string => `${orders}/excel_table${query}`,
+        downloadExcel: (query: string): string => `${orders}/excel_table${query}`,
     },
     comment: {
         postComment: (id: string): string => `${comments}/${id}`
@@ -33,7 +33,7 @@ const urls = {
         createGroup: groups
     },
     user: {
-        getAllManagers: users,
+        getAllManagers: (query: string): string => `${users}${query}`,
         bannedById: (userId: string): string => `${users}/banned/${userId}`,
         unbannedById: (userId: string): string => `${users}/unbanned/${userId}`
     }

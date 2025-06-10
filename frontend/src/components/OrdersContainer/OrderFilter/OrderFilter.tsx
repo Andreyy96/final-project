@@ -7,8 +7,9 @@ import {Replay, UploadFile} from "@mui/icons-material";
 import css from "./OrderFilter.module.css"
 import {Group} from "../../GroupsContainer/Group/Group.tsx";
 import {useAppLocation} from "../../../hooks/useAppLocation.ts";
-import {baseURL} from "../../../constants/urls.ts";
-import {authService} from "../../../services/authService.ts";
+import {useAppDispatch} from "../../../hooks/useAppDispatch.ts";
+import {orderActions} from "../../../store/slices/orderSlice.ts";
+
 
 const OrderFilter = () => {
     const {search} = useAppLocation()
@@ -16,7 +17,7 @@ const OrderFilter = () => {
     const [startTrigger, setStartTrigger] = useState<boolean>(false)
     const [endTrigger, setEndTrigger] = useState<boolean>(false)
     const {groups} = useAppSelector(state => state.group)
-
+    const dispatch = useAppDispatch()
 
     const {currentUser} = useAppSelector(state => state.auth)
     const [query, setQuery] = useSearchParams();
@@ -66,7 +67,7 @@ const OrderFilter = () => {
         }
     }, [query, setValue]);
 
-    const setQ:SubmitHandler<IQueryFilterOrder> = async (queries) => {
+    const setQ: SubmitHandler<IQueryFilterOrder> = async (queries) => {
         for (const element in queries) {
             // eslint-disable-next-line @typescript-eslint/ban-ts-comment
             // @ts-expect-error
@@ -78,8 +79,7 @@ const OrderFilter = () => {
                     prev.delete("page")
                     return prev
                 })
-            }
-            else {
+            } else {
                 setQuery(prev => {
                     prev.delete(element)
                     return prev
@@ -109,15 +109,11 @@ const OrderFilter = () => {
         })
     }
 
-    const downlandFile = async () => {
-        const accessToken = authService.getAccessToken()
-        if(search) {
-            window.open(`${baseURL}/orders/excel_table${search}&accessToken=${accessToken}`)
-        } else {
-            window.open(`${baseURL}/orders/excel_table?accessToken=${accessToken}`)
-
-        }
+    const createExcel = () => {
+        dispatch(orderActions.downloadExcel({query: search}))
     }
+
+
 
     return (
         <div>
@@ -176,9 +172,10 @@ const OrderFilter = () => {
                     </label>
                     <button className={css.button_reset} formAction={resetTab}><Replay className={css.svg_reload}/>
                     </button>
-                    <button formAction={downlandFile}><UploadFile/></button>
+                    <button formAction={createExcel}><UploadFile/></button>
                 </div>
             </form>
+
         </div>
     );
 };

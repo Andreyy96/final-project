@@ -1,13 +1,15 @@
 import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api-error";
+import { IQuery } from "../interfaces/query.interface";
 import { IManagerListResponse, IUser } from "../interfaces/user.interface";
 import { userPresenter } from "../presenters/user.presenter";
 import { userRepository } from "../repositories/user.repository";
 
 class UserService {
-  public async getList(): Promise<IManagerListResponse> {
-    const users = await userRepository.getManagerList();
-    return userPresenter.toListResDto(users);
+  public async getList(query: IQuery): Promise<IManagerListResponse> {
+    const [users, total, limit] = await userRepository.getManagerList(query);
+    // const users = await userRepository.getManagerList();
+    return userPresenter.toListResDto(users, total, limit, query);
   }
 
   public async bannedManagerById(userId: string): Promise<Partial<IUser>> {

@@ -7,23 +7,27 @@ import {userActions} from "../../../store/slices/userSlice.ts";
 import {Managers} from "../Managers/Managers.tsx";
 import {useAppSelector} from "../../../hooks/useAppSelector.ts";
 import {ModalWindow} from "../ModalWindow/ModalWindow.tsx";
+import {useAppLocation} from "../../../hooks/useAppLocation.ts";
+import {ManagerPagination} from "../ManagerPagination/ManagerPagination.tsx";
 
 
 const AdminPanel = () => {
+    const {search} = useAppLocation()
     const {userTrigger} = useAppSelector(state => state.user)
     const {createUserTrigger} = useAppSelector(state => state.auth)
     const dispatch = useAppDispatch()
 
     useEffect(() => {
         dispatch(orderActions.getStatusStatistic())
-        dispatch(userActions.getAllManagers())
-    }, [dispatch, userTrigger, createUserTrigger]);
+        dispatch(userActions.getAllManagers({query: search}))
+    }, [dispatch, search, userTrigger, createUserTrigger]);
 
     return (
         <div className={css.admin_panel}>
             <OrderStatistic/>
             <ModalWindow/>
             <Managers/>
+            <ManagerPagination/>
         </div>
     );
 };

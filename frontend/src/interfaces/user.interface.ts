@@ -2,20 +2,20 @@ import {UserRoleEnum} from "../enums/user-role.enum.ts";
 import {ITokenPair} from "./token.interface.ts";
 
 export interface IUser {
-    _id: string
-    id: number
-    name: string
-    surname: string
-    email: string
-    role: UserRoleEnum
-    is_active: boolean
-    last_login: Date
-    is_banned: boolean
+    _id: string;
+    id: number;
+    name: string;
+    surname: string;
+    email: string;
+    role: UserRoleEnum;
+    is_active: boolean;
+    last_login: Date;
+    is_banned: boolean;
 }
 
 export interface IAuthUser {
-    user: IUser,
-    tokens: ITokenPair
+    user: IUser;
+    tokens: ITokenPair;
 }
 
 export interface ICreateManager {
@@ -39,25 +39,28 @@ export interface IManagerInfo {
 
 export interface IManagerWithStatistic {
     user: {
-        _id: string
-        id: number
-        name: string
-        surname: string
-        email: string
-        role: string
-        is_active: boolean
-        last_login: string
-        is_banned: boolean
+        _id: string;
+        id: number;
+        name: string;
+        surname: string;
+        email: string;
+        role: string;
+        is_active: boolean;
+        last_login: string;
+        is_banned: boolean;
     }
     orders: {
-        total: number
-        in_work: number
-        agree: number
-        disagree: number
-        dubbing: number
+        total: number;
+        in_work: number;
+        agree: number;
+        disagree: number;
+        dubbing: number;
     }
 }
 
 export interface IManagerRes {
     data: IManagerWithStatistic[];
+    page: number;
+    total: number;
+    limit: number;
 }

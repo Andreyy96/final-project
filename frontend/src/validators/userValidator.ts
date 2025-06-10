@@ -33,13 +33,13 @@ const createManagerValidator = Joi.object({
 const schemaForSetPassword =  Joi.object({
         password: Joi.string().regex(regexConstant.PASSWORD).trim().required().messages({
             'string.pattern.base':'invalid password',
-            'string.empty': `"email" cannot be an empty field`,
-            'any.required': `"email" is a required field`
+            'string.empty': `"password" cannot be an empty field`,
+            'any.required': `"password" is a required field`
         }),
         confirm_password: Joi.string().valid(Joi.ref('password')).required().messages({
             'string.empty': `"email" cannot be an empty field`,
-            'any.required': `"email" is a required field`,
-            'any.ref': `"confirm_email" not equal "email"`
+            'any.required': `"confirm_password" is a required field`,
+            'any.ref': `"confirm_password" not equal "email"`
         }),
     });
 

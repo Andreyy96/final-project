@@ -1,11 +1,14 @@
 import { NextFunction, Request, Response } from "express";
 
+import { IQuery } from "../interfaces/query.interface";
 import { userService } from "../services/user.service";
 
 class UserController {
   public async getList(req: Request, res: Response, next: NextFunction) {
     try {
-      const result = await userService.getList();
+      const query = req.query as unknown as IQuery;
+
+      const result = await userService.getList(query);
       res.json(result);
     } catch (e) {
       next(e);

@@ -4,6 +4,7 @@ import css from "./Manager.module.css"
 import {useAppDispatch} from "../../../hooks/useAppDispatch.ts";
 import {userActions} from "../../../store/slices/userSlice.ts";
 import {authActions} from "../../../store/slices/authSlice.ts";
+import {UserRoleEnum} from "../../../enums/user-role.enum.ts";
 
 interface IProps {
     manager: IManagerWithStatistic
@@ -55,8 +56,8 @@ const Manager: FC<IProps> = ({manager: {user, orders}}) => {
                         :
                         <button onClick={sendEmailForRecoveryPassword}>RECOVERY PASSWORD</button>
                 }
-                <button onClick={banUser}>BAN</button>
-                <button onClick={unbanUser}>UNBAN</button>
+                {(user.is_banned && user.role !== UserRoleEnum.ADMIN) && <button onClick={unbanUser}>UNBAN</button>}
+                {(!user.is_banned && user.role !== UserRoleEnum.ADMIN)  &&<button onClick={banUser}>BAN</button>}
             </div>
         </div>
     );

@@ -1,3 +1,4 @@
+import { IQuery } from "../interfaces/query.interface";
 import {
   IManagerListResponse,
   IResUser,
@@ -43,9 +44,17 @@ class UserPresenter {
     };
   }
 
-  public toListResDto(entities: IUserWithStatistic[]): IManagerListResponse {
+  public toListResDto(
+    entities: IUserWithStatistic[],
+    total: number,
+    limit: number,
+    query: IQuery,
+  ): IManagerListResponse {
     return {
       data: entities.map(this.toResDto),
+      page: query.page ? +query.page : 1,
+      total,
+      limit,
     };
   }
 }
