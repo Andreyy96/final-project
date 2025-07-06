@@ -33,7 +33,6 @@ class OrderService {
         query.end_date) &&
       !query.order
     ) {
-      console.log("l", 1);
       const [entries, total, limit] =
         await orderRepository.getListNoAggregation(query);
       const orders = await this.makeOneArray(entries);
@@ -54,18 +53,15 @@ class OrderService {
         query.end_date) &&
       query.order
     ) {
-      console.log("l", 2);
       const [entries, total, limit] =
         await orderRepository.getSortListNoAggregation(query);
       const orders = await this.makeOneArray(entries);
       return orderPresenter.toListResDto(orders, total, limit, query);
     } else if (query.order) {
-      console.log("l", 3);
       const [entities, total, limit] =
         await orderRepository.getListByOrder(query);
       return orderPresenter.toListResDto(entities, total, limit, query);
     } else {
-      console.log("l", 4);
       const [entities, total, limit] = await orderRepository.getList(query);
       return orderPresenter.toListResDto(entities, total, limit, query);
     }

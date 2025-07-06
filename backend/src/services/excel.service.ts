@@ -25,7 +25,6 @@ class ExcelService {
         query.end_date) &&
       !query.order
     ) {
-      console.log(1);
       const entities = await orderRepository.getFilterListForExcel(query);
       result = orderPresenter.toListForExcelResDto(entities);
     } else if (
@@ -44,18 +43,15 @@ class ExcelService {
         query.end_date) &&
       query.order
     ) {
-      console.log(2);
       // result = await orderRepository.getSortListForExcel(query);
       const [entries] = await orderRepository.getSortListForExcel(query);
       const orders = await orderService.makeOneArray(entries);
       result = orderPresenter.toListForExcelResDto(orders);
     } else if (query.order) {
-      console.log(3);
       // result = await orderRepository.getListForExcelByOrder(query);
       const [entities] = await orderRepository.getListForExcelByOrder(query);
-      result =  orderPresenter.toListForExcelResDto(entities);
+      result = orderPresenter.toListForExcelResDto(entities);
     } else {
-      console.log(4);
       const entities = await orderRepository.getListForExcel();
       result = orderPresenter.toListForExcelResDto(entities);
     }
