@@ -10,6 +10,7 @@ import {useState} from "react";
 import {authActions} from "../../../store/slices/authSlice.ts";
 import {ICreateManager} from "../../../interfaces/user.interface.ts";
 import {useAppSelector} from "../../../hooks/useAppSelector.ts";
+import {useAppContext} from "../../../hooks/useAppContext.ts";
 
 const ModalWindow = () => {
 
@@ -19,9 +20,13 @@ const ModalWindow = () => {
     });
 
     const [open, setOpen] = useState<boolean>(false);
+
+    const [, setFlag] = useAppContext();
+
     const handleOpen = () => {
         setOpen(true);
     }
+
     const handleClose = () => {
         reset()
         dispatch(authActions.setCreateManagerError())
@@ -33,6 +38,7 @@ const ModalWindow = () => {
 
     const createManager:SubmitHandler<ICreateManager> = async (body) => {
         const {meta: {requestStatus}} = await dispatch(authActions.signUpManager({body}))
+        setFlag(false)
         if (requestStatus==='fulfilled'){
             handleClose()
         }

@@ -11,6 +11,7 @@ import {groupActions} from "../../../store/slices/groupSlice.ts";
 import {joiResolver} from "@hookform/resolvers/joi";
 import {orderValidator} from "../../../validators/orderValidator.ts";
 import {orderActions} from "../../../store/slices/orderSlice.ts";
+import {useAppContext} from "../../../hooks/useAppContext.ts";
 
 interface IProps {
     order: IOrder
@@ -26,8 +27,13 @@ const ModalWindow:FC<IProps> = ({order}) => {
     const [open, setOpen] = useState<boolean>(false);
     const {currentUser} = useAppSelector(state => state.auth)
     const handleOpen = () => setOpen(true);
-    const handleClose = () => setOpen(false);
+    const handleClose = () => {
+        setSelectOrText(prevState => !prevState)
+        setValue("group", order.group)
+        setOpen(false);
+    }
     const dispatch = useAppDispatch()
+    const [, setFlag] = useAppContext();
 
     const addBtn = useRef(null)
     const updateBtn = useRef(null)
@@ -63,17 +69,18 @@ const ModalWindow:FC<IProps> = ({order}) => {
         } else {
             setValue("status", "In work")
         }
-        if (order.group && selectOrText) {
+        if (order.group) {
             setValue("group", order.group)
         } else {
             resetField("group")
         }
-    }, [order, setValue, selectOrText]);
+    }, [order, setValue]);
 
     const updateOrder:SubmitHandler<IUpdateDtoOrder> = async (dto,event: BaseSyntheticEvent) => {
         // eslint-disable-next-line @typescript-eslint/ban-ts-comment
         // @ts-expect-error
         if (event.nativeEvent.submitter === updateBtn.current) {
+            setFlag(true)
             await dispatch(orderActions.updateById({ id: order._id.toString(), dto}))
             handleClose()
         } else {
@@ -81,8 +88,12 @@ const ModalWindow:FC<IProps> = ({order}) => {
             // @ts-expect-error
             if(event.nativeEvent.submitter === changerBtn.current) {
                 setSelectOrText(prevState => !prevState)
-
-
+                dispatch(groupActions.setGroupError(null))
+                if (!selectOrText) {
+                    setValue("group", order.group)
+                } else {
+                    resetField("group")
+                }
             } else {
                 const {meta: {requestStatus}} = await dispatch(groupActions.createGroup({name: dto.group}))
                 if (requestStatus==='fulfilled'){
@@ -113,7 +124,7 @@ const ModalWindow:FC<IProps> = ({order}) => {
                                             <option value="">null</option>
                                             {groups.map(group => <Group group={group} key={group._id}/>)}
                                         </select>
-                                        {errors.group && <p>{errors.group.message}</p>}
+
                                         <button className={css.button_add} ref={changerBtn}>add group</button>
                                     </>
                                     :

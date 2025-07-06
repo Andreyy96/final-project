@@ -18,7 +18,7 @@ const initialState: IState = {
     limit: null,
     page: null,
     userTrigger: false,
-    createError: null
+    createError: null,
 }
 
 const getAllManagers = createAsyncThunk<IManagerRes, {query: string}>(

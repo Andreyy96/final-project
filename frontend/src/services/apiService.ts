@@ -6,12 +6,13 @@ import {routes} from "../routers/router.tsx";
 let isRefreshing = false
 type IWaiteList = () => void
 const waitList:IWaiteList[] = []
+let refreshExcist = false
 const apiService = axios.create({baseURL})
 
 apiService.interceptors.request.use(req => {
     const accessToken = authService.getAccessToken();
     const refreshToken = authService.getRefreshToken();
-
+    refreshExcist = !!refreshToken
     if (accessToken && req.url !== urls.auth.refresh) {
         req.headers.Authorization = `Bearer ${accessToken}`
     }
@@ -26,7 +27,7 @@ apiService.interceptors.response.use(
     async (error: AxiosError)=> {
         const originalRequest = error.config
 
-        if (error.response.status === 401) {
+        if (error.response.status === 401 && refreshExcist) {
             if (!isRefreshing) {
                 isRefreshing = true
 
@@ -39,7 +40,6 @@ apiService.interceptors.response.use(
                 catch (e) {
                     authService.deleteTokens()
                     isRefreshing = false
-                    alert("Your session was expiration. Please login again")
                     await routes.navigate("/login?sessionExpiration=true")
                     return Promise.reject(error)
                 }

@@ -1,13 +1,15 @@
-import {createAsyncThunk, createSlice, isFulfilled} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, isFulfilled, isPending} from "@reduxjs/toolkit";
 import {AxiosError} from "axios";
 import {commentService} from "../../services/commentService.ts";
 
 interface IState {
     trigger: boolean
+    createCommentAction: boolean
 }
 
 const initialState: IState = {
-    trigger: false
+    trigger: false,
+    createCommentAction: false
 }
 
 const postComment = createAsyncThunk<void, { dto : { body: string }, id: string  }>(
@@ -30,6 +32,10 @@ const commentSlice = createSlice({
     extraReducers: builder => builder
         .addMatcher(isFulfilled(postComment), state =>{
             state.trigger = !state.trigger
+            state.createCommentAction = false
+        })
+        .addMatcher(isPending(postComment), state =>{
+            state.createCommentAction = true
         })
 
 })

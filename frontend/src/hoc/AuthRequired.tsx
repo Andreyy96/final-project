@@ -12,7 +12,7 @@ const AuthRequired:FC<IProps> = ({children}) => {
     const {currentUser} = useAppSelector(state => state.auth)
 
     if (!accessToken && !currentUser) {
-        return <Navigate to={"/login"}/>
+        return <Navigate to={"/login?sessionExpiration=true"}/>
     }
 
     if (currentUser && currentUser.is_banned) {

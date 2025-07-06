@@ -10,7 +10,7 @@ const CurrentUserLogined:FC<IProps> = ({children}) => {
 
     const accessToken = authService.getAccessToken();
 
-    if (accessToken) {
+    if (accessToken ) {
         return <Navigate to={"/orders"}/>
     }
 

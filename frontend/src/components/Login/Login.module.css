@@ -2,8 +2,10 @@
     align-items: center;
     display: flex;
     justify-content: center;
+    flex-direction: column;
     background: #76b852;
     min-height: 100vh;
+    gap: 7px;
 }
 
 .loginForm {
@@ -41,4 +43,14 @@ button {
     border-radius: 10px;
     border: none;
     cursor: pointer;
+}
+
+.sessionExpirationDiv {
+    padding: 5px;
+    background-color: white;
+}
+
+.sessionExpirationDiv p{
+    font-size: 18px;
+    color: red;
 }

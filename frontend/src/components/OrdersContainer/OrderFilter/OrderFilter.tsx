@@ -9,6 +9,7 @@ import {Group} from "../../GroupsContainer/Group/Group.tsx";
 import {useAppLocation} from "../../../hooks/useAppLocation.ts";
 import {useAppDispatch} from "../../../hooks/useAppDispatch.ts";
 import {orderActions} from "../../../store/slices/orderSlice.ts";
+import {groupActions} from "../../../store/slices/groupSlice.ts";
 
 
 const OrderFilter = () => {
@@ -16,56 +17,81 @@ const OrderFilter = () => {
     const {register, handleSubmit, setValue, reset} = useForm<IQueryFilterOrder>();
     const [startTrigger, setStartTrigger] = useState<boolean>(false)
     const [endTrigger, setEndTrigger] = useState<boolean>(false)
-    const {groups} = useAppSelector(state => state.group)
+    const {groups, groupTrigger} = useAppSelector(state => state.group)
     const dispatch = useAppDispatch()
+
 
     const {currentUser} = useAppSelector(state => state.auth)
     const [query, setQuery] = useSearchParams();
 
-
     useEffect(() => {
+        dispatch(groupActions.getAllGroup())
         if (query.get("name")) {
             setValue("name", query.get("name"))
+        } else {
+            setValue("name", null)
         }
         if (query.get("surname")) {
             setValue("surname", query.get("surname"))
+        } else {
+            setValue("surname", null)
         }
         if (query.get("email")) {
             setValue("email", query.get("email"))
+        } else {
+            setValue("email", null)
         }
         if (query.get("phone")) {
             setValue("phone", query.get("phone"))
+        } else {
+            setValue("phone", null)
         }
         if (query.get("age")) {
             setValue("age", query.get("age"))
+        } else {
+            setValue("age", null)
         }
         if (query.get("course")) {
             setValue("course", query.get("course"))
+        } else {
+            setValue("course", null)
         }
         if (query.get("course_format")) {
             setValue("course_format", query.get("course_format"))
+        } else {
+            setValue("course_format", null)
         }
         if (query.get("course_type")) {
             setValue("course_type", query.get("course_type"))
+        } else {
+            setValue("course_type", null)
         }
         if (query.get("status")) {
             setValue("status", query.get("status"))
+        } else {
+            setValue("status", null)
         }
         if (query.get("group")) {
             setValue("group", query.get("group"))
+        } else {
+            setValue("group", null)
         }
         if (query.get("start_date")) {
             setValue("start_date", query.get("start_date"))
+        } else {
+            setValue("start_date", null)
         }
         if (query.get("end_date")) {
             setValue("end_date", query.get("end_date"))
+        } else {
+            setValue("end_date", null)
         }
         if (query.get("manager")) {
             setValue("manager", true)
         } else {
             setValue("manager", false)
         }
-    }, [query, setValue]);
+    }, [query, setValue, groupTrigger]);
 
     const setQ: SubmitHandler<IQueryFilterOrder> = async (queries) => {
         for (const element in queries) {
@@ -109,14 +135,14 @@ const OrderFilter = () => {
         })
     }
 
-    const createExcel = () => {
+    const createExcel =  () => {
         dispatch(orderActions.downloadExcel({query: search}))
     }
 
 
 
     return (
-        <div>
+        <div className={css.main_div}>
             <form className={css.main_filter_div} name={"filter_order"} onChange={handleSubmit(setQ)}>
                 <div className={css.form_input}>
                     <input type="text" placeholder={'Name'} {...register('name')}/>
@@ -172,10 +198,10 @@ const OrderFilter = () => {
                     </label>
                     <button className={css.button_reset} formAction={resetTab}><Replay className={css.svg_reload}/>
                     </button>
-                    <button formAction={createExcel}><UploadFile/></button>
+                    {/*<button formAction={createExcel}><UploadFile/></button>*/}
                 </div>
             </form>
-
+            <button onClick={createExcel}><UploadFile/></button>
         </div>
     );
 };

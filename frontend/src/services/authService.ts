@@ -21,20 +21,22 @@ const authService = {
         await apiService.post(urls.auth.signUpManager, body)
     },
 
-    async sendEmailForActivate(userId: string): Promise<void> {
-        await apiService.post(urls.auth.sendEmailForActivate(userId))
+    async getURLForActivate(userId: string): IRes<string> {
+       return await apiService.post(urls.auth.getURLForActivate(userId))
     },
 
     async activateAccount(actionToken: string, body: IPassword): Promise<void> {
         await apiService.patch(urls.auth.activateAccount(actionToken), body)
     },
-    async sendEmailForRecoveryPassword(email: string): Promise<void> {
-        await apiService.post(urls.auth.sendEmailForRecoveryPassword, {email})
+
+    async getURLForRecoveryPassword(email: string): IRes<string> {
+        return await apiService.post(urls.auth.getURLForRecoveryPassword, {email})
     },
 
     async recoveryPassword(actionToken: string, body: IPassword): Promise<void> {
         await apiService.patch(urls.auth.recoveryPassword(actionToken), body)
     },
+
     me(): IRes<IUser> {
         return apiService.get(urls.auth.me)
     },

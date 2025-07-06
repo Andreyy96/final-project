@@ -22,3 +22,6 @@ td, th {
     gap: 10px;
     flex-direction: column;
 }
+.loader_div {
+    padding-top: 50px;
+}

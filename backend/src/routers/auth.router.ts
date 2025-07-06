@@ -39,14 +39,14 @@ router.post(
   "/activate",
   authMiddleware.checkAccessToken,
   accessMiddleware.isAdmin,
-  authController.activateAccountSendEmail,
+  authController.activateAccountGetURL,
 );
 
 router.post(
   "/recovery-password",
   authMiddleware.checkAccessToken,
   accessMiddleware.isAdmin,
-  authController.recoveryPasswordSendEmail,
+  authController.recoveryPasswordGetURL,
 );
 
 router.post(

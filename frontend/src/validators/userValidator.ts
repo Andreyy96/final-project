@@ -36,10 +36,10 @@ const schemaForSetPassword =  Joi.object({
             'string.empty': `"password" cannot be an empty field`,
             'any.required': `"password" is a required field`
         }),
-        confirm_password: Joi.string().valid(Joi.ref('password')).required().messages({
+        confirm_password: Joi.string().valid(Joi.ref('password')).trim().required().messages({
             'string.empty': `"email" cannot be an empty field`,
             'any.required': `"confirm_password" is a required field`,
-            'any.ref': `"confirm_password" not equal "email"`
+            'any.only': `"confirm_password" not equal "email"`
         }),
     });
 

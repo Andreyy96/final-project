@@ -5,6 +5,7 @@ import {useAppDispatch} from "../../../hooks/useAppDispatch.ts";
 import {userActions} from "../../../store/slices/userSlice.ts";
 import {authActions} from "../../../store/slices/authSlice.ts";
 import {UserRoleEnum} from "../../../enums/user-role.enum.ts";
+import {useAppContext} from "../../../hooks/useAppContext.ts";
 
 interface IProps {
     manager: IManagerWithStatistic
@@ -12,21 +13,25 @@ interface IProps {
 
 const Manager: FC<IProps> = ({manager: {user, orders}}) => {
     const dispatch = useAppDispatch()
+    const [, setFlag] = useAppContext();
+
 
     const banUser = () => {
+        setFlag(true)
         dispatch(userActions.bannedById({userId: user._id}))
     }
 
     const unbanUser = () => {
+        setFlag(true)
         dispatch(userActions.unbannedById({userId: user._id}))
     }
 
-    const sendEmailForActivate = () => {
-        dispatch(authActions.sendEmailForActivate({userId: user._id}))
+    const getURLForActivate = () => {
+        dispatch(authActions.getURLForActivate({userId: user._id}))
     }
 
-    const sendEmailForRecoveryPassword = () => {
-        dispatch(authActions.sendEmailForRecoveryPassword({email: user.email}))
+    const getURLForRecoveryPassword = () => {
+        dispatch(authActions.getURLForRecoveryPassword({email: user.email}))
     }
 
 
@@ -52,9 +57,9 @@ const Manager: FC<IProps> = ({manager: {user, orders}}) => {
             <div className={css.buttons_div}>
                 {
                     !user.is_active ?
-                        <button onClick={sendEmailForActivate}>ACTIVATE</button>
+                        <button onClick={getURLForActivate}>ACTIVATE</button>
                         :
-                        <button onClick={sendEmailForRecoveryPassword}>RECOVERY PASSWORD</button>
+                        <button onClick={getURLForRecoveryPassword}>RECOVERY PASSWORD</button>
                 }
                 {(user.is_banned && user.role !== UserRoleEnum.ADMIN) && <button onClick={unbanUser}>UNBAN</button>}
                 {(!user.is_banned && user.role !== UserRoleEnum.ADMIN)  &&<button onClick={banUser}>BAN</button>}

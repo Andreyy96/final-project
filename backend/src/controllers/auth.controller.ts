@@ -55,7 +55,7 @@ class AuthController {
     }
   }
 
-  public async activateAccountSendEmail(
+  public async activateAccountGetURL(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -64,8 +64,11 @@ class AuthController {
       const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
       const userId = req.query.userId as string;
 
-      await authService.activateAccountSendEmail(jwtPayload, userId);
-      res.sendStatus(204);
+      const result = await authService.activateAccountGetURL(
+        jwtPayload,
+        userId,
+      );
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }
@@ -87,7 +90,7 @@ class AuthController {
     }
   }
 
-  public async recoveryPasswordSendEmail(
+  public async recoveryPasswordGetURL(
     req: Request,
     res: Response,
     next: NextFunction,
@@ -96,8 +99,8 @@ class AuthController {
       // const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
       const email = req.body.email as string;
 
-      await authService.recoveryPasswordSendEmail(email);
-      res.sendStatus(204);
+      const result = await authService.recoveryPasswordGetURL(email);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }

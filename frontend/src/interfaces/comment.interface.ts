@@ -7,4 +7,5 @@ export interface IComment {
 	manager_name: string;
 	manager_surname: string;
 	date: string;
+	_orderId: string;
 }

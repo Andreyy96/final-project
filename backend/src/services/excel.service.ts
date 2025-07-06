@@ -1,12 +1,14 @@
 import exceljs from "exceljs";
 
-import { IGeneralInfoOrder } from "../interfaces/order.interface";
+import { IGeneralInfoOrder, IOrder } from "../interfaces/order.interface";
 import { IQuery } from "../interfaces/query.interface";
+import { orderPresenter } from "../presenters/order.presenter";
 import { orderRepository } from "../repositories/order.repository";
+import { orderService } from "./order.service";
 
 class ExcelService {
   public async getWorkbook(query: IQuery): Promise<exceljs.Workbook> {
-    let result: IGeneralInfoOrder[];
+    let result: { data: IGeneralInfoOrder[] } | { data: IOrder[] };
     if (
       (query.name ||
         query.surname ||
@@ -23,7 +25,9 @@ class ExcelService {
         query.end_date) &&
       !query.order
     ) {
-      result = await orderRepository.getFilterListForExcel(query);
+      console.log(1);
+      const entities = await orderRepository.getFilterListForExcel(query);
+      result = orderPresenter.toListForExcelResDto(entities);
     } else if (
       (query.name ||
         query.surname ||
@@ -40,11 +44,20 @@ class ExcelService {
         query.end_date) &&
       query.order
     ) {
-      result = await orderRepository.getSortListForExcel(query);
+      console.log(2);
+      // result = await orderRepository.getSortListForExcel(query);
+      const [entries] = await orderRepository.getSortListForExcel(query);
+      const orders = await orderService.makeOneArray(entries);
+      result = orderPresenter.toListForExcelResDto(orders);
     } else if (query.order) {
-      result = await orderRepository.getListForExcelByOrder(query);
+      console.log(3);
+      // result = await orderRepository.getListForExcelByOrder(query);
+      const [entities] = await orderRepository.getListForExcelByOrder(query);
+      result =  orderPresenter.toListForExcelResDto(entities);
     } else {
-      result = await orderRepository.getListForExcel();
+      console.log(4);
+      const entities = await orderRepository.getListForExcel();
+      result = orderPresenter.toListForExcelResDto(entities);
     }
 
     const workbook = new exceljs.Workbook();
@@ -68,7 +81,7 @@ class ExcelService {
       { header: "CreatedAt", key: "created_at", width: 22 },
       { header: "Manager", key: "manager", width: 14 },
     ];
-    sheet.addRows(result);
+    sheet.addRows(result.data);
 
     return workbook;
   }

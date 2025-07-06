@@ -1,6 +1,5 @@
 import { configs } from "../configs/config";
 import { ActionTokenTypeEnum } from "../enums/action-token-type.enum";
-import { EmailTypeEnum } from "../enums/email-type.enum";
 import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api-error";
 import { ITokenPair, ITokenPayload } from "../interfaces/token.interface";
@@ -10,7 +9,6 @@ import { accessTokenRepository } from "../repositories/access-token.repository";
 import { actionTokenRepository } from "../repositories/action-token.repository";
 import { refreshTokenRepository } from "../repositories/refresh-token.repository";
 import { userRepository } from "../repositories/user.repository";
-import { emailService } from "./email.service";
 import { passwordService } from "./password.service";
 import { tokenService } from "./token.service";
 
@@ -53,10 +51,10 @@ class AuthService {
     });
   }
 
-  public async activateAccountSendEmail(
+  public async activateAccountGetURL(
     jwtPayload: ITokenPayload,
     userId: string,
-  ): Promise<void> {
+  ): Promise<string> {
     const user = await userRepository.getById(userId);
 
     if (!user) {
@@ -74,10 +72,7 @@ class AuthService {
       token,
     });
 
-    await emailService.sendMail(EmailTypeEnum.ACTIVATE, user.email, {
-      frontUrl: configs.FRONT_URL,
-      actionToken: token,
-    });
+    return `${configs.FRONT_URL}/activate/${token}`;
   }
 
   public async activateAccount(
@@ -93,7 +88,7 @@ class AuthService {
     });
   }
 
-  public async recoveryPasswordSendEmail(email: string): Promise<void> {
+  public async recoveryPasswordGetURL(email: string): Promise<string> {
     const user = await userRepository.getByEmail(email);
 
     if (!user) {
@@ -114,10 +109,7 @@ class AuthService {
       token,
     });
 
-    await emailService.sendMail(EmailTypeEnum.RECOVERY_PASSWORD, user.email, {
-      frontUrl: configs.FRONT_URL,
-      actionToken: token,
-    });
+    return `${configs.FRONT_URL}/recovery-password/${token}`;
   }
 
   public async recoveryPasswordSet(

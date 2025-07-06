@@ -10,6 +10,7 @@ interface IState {
     createManagerError: string
     currentUser: IUser
     createUserTrigger: boolean
+    // actionBtn: boolean
 }
 
 const initialState: IState = {
@@ -17,7 +18,8 @@ const initialState: IState = {
     passwordError: null,
     createManagerError: null,
     currentUser: null,
-    createUserTrigger: null
+    createUserTrigger: null,
+    // actionBtn: false
 }
 
 const login = createAsyncThunk<IUser, { user : { email: string, password: string } }>(
@@ -46,11 +48,12 @@ const signUpManager = createAsyncThunk<void, { body: ICreateManager }>(
     }
 )
 
-const sendEmailForActivate = createAsyncThunk<void, { userId: string }>(
-    "authSlice/sendEmailForActivate",
+const getURLForActivate = createAsyncThunk<void, { userId: string }>(
+    "authSlice/getURLForActivate",
     async ({userId}, thunkAPI) => {
         try {
-            await authService.sendEmailForActivate(userId)
+            const {data} = await authService.getURLForActivate(userId)
+            await navigator.clipboard.writeText(data)
         }
         catch (e) {
             const error = e as AxiosError
@@ -72,12 +75,13 @@ const activateAccount = createAsyncThunk<void, { actionToken: string, body: IPas
     }
 )
 
-const sendEmailForRecoveryPassword = createAsyncThunk<void, { email: string }>(
-    "authSlice/sendEmailForRecoveryPassword",
+const getURLForRecoveryPassword = createAsyncThunk<void, { email: string }>(
+    "authSlice/getURLForRecoveryPassword",
     async ({email}, thunkAPI) => {
         try {
             console.log(email)
-            await authService.sendEmailForRecoveryPassword(email)
+            const {data} = await authService.getURLForRecoveryPassword(email)
+            await navigator.clipboard.writeText(data)
         }
         catch (e) {
             const error = e as AxiosError
@@ -153,6 +157,12 @@ const authSlice = createSlice({
         .addMatcher(isFulfilled(activateAccount, recoveryPassword), state => {
             state.passwordError = null
         })
+        // .addMatcher(isFulfilled(getURLForActivate, getURLForRecoveryPassword), state => {
+        //     state.actionBtn = false
+        // })
+        // .addMatcher(isPending(getURLForActivate, getURLForRecoveryPassword), state => {
+        //     state.actionBtn = true
+        // })
 })
 
 const {reducer: authReducer, actions} = authSlice
@@ -161,9 +171,9 @@ const authActions = {
     ...actions,
     login,
     signUpManager,
-    sendEmailForActivate,
+    getURLForActivate,
     activateAccount,
-    sendEmailForRecoveryPassword,
+    getURLForRecoveryPassword,
     recoveryPassword,
     me
 }

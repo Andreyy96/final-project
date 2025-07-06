@@ -1,6 +1,6 @@
 import {SubmitHandler, useForm} from "react-hook-form";
 
-import {useNavigate} from "react-router-dom";
+import {useNavigate, useSearchParams} from "react-router-dom";
 import {useAppDispatch} from "../../hooks/useAppDispatch.ts";
 import {authActions} from "../../store/slices/authSlice.ts";
 import {joiResolver} from "@hookform/resolvers/joi";
@@ -17,6 +17,10 @@ const Login = () => {
     const dispatch = useAppDispatch()
     const navigate = useNavigate()
     const {loginError} = useAppSelector(state => state.auth)
+    const [searchParams] = useSearchParams()
+    const {isLoading} = useAppSelector(state => state.loading)
+    const sessionExpiration = !!searchParams.get("sessionExpiration")
+
 
     const login:SubmitHandler<{ email: string, password: string }> = async (user) => {
         const {meta: {requestStatus}} = await dispatch(authActions.login({user}))
@@ -27,6 +31,7 @@ const Login = () => {
 
     return (
         <div className={css.loginPage}>
+            { sessionExpiration && <div className={css.sessionExpirationDiv}><p>Your session was expiration. Please login again</p></div>}
             <form className={css.loginForm} onSubmit={handleSubmit(login)}>
                 <label htmlFor={"email"}>Email</label>
                 {errors.email ?
@@ -44,7 +49,7 @@ const Login = () => {
                 }
                 {errors.password && <p>{errors.password.message}</p>}
                 {loginError && <p>{loginError}</p>}
-                <button>login</button>
+                <button>{isLoading ? "LOADING..." : "LOGIN"}</button>
             </form>
         </div>
     );

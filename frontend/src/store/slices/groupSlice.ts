@@ -1,4 +1,4 @@
-import {createAsyncThunk, createSlice, isFulfilled} from "@reduxjs/toolkit";
+import {createAsyncThunk, createSlice, isFulfilled, isPending} from "@reduxjs/toolkit";
 import {AxiosError} from "axios";
 
 import {groupService} from "../../services/groupService.ts";
@@ -16,7 +16,7 @@ const initialState: IState = {
     createGroupError: null,
 }
 
-const getAll = createAsyncThunk<IGroup[], void>(
+const getAllGroup = createAsyncThunk<IGroup[], void>(
     "groupSlice/getAll",
     async (_, thunkAPI) => {
         try {
@@ -46,17 +46,23 @@ const createGroup = createAsyncThunk<void, {name: string}>(
 const groupSlice = createSlice({
     name: "groupSlice",
     initialState,
-    reducers: {},
+    reducers: {
+        setGroupError: (state) => {
+            state.createGroupError = null
+        }
+    },
     extraReducers: builder => builder
-        .addCase(getAll.fulfilled, (state, action) => {
+        .addCase(getAllGroup.fulfilled, (state, action) => {
             state.groups = action.payload
         })
         .addCase(createGroup.rejected, (state, action) => {
             state.createGroupError = action.payload as string
         })
-
         .addMatcher(isFulfilled(createGroup), state =>{
             state.createGroupError = null
+            state.groupTrigger = !state.groupTrigger
+        })
+        .addMatcher(isPending(createGroup), state => {
             state.groupTrigger = !state.groupTrigger
         })
 
@@ -66,7 +72,7 @@ const {reducer: groupReducer, actions} = groupSlice
 
 const groupActions = {
     ...actions,
-    getAll,
+    getAllGroup,
     createGroup
 }
 

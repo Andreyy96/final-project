@@ -92,7 +92,7 @@ const orderSlice = createSlice({
     reducers: {
         setString: (state, action) => {
             state.order_tr = action.payload
-        },
+        }
     },
     extraReducers: builder => builder
         .addCase(getAll.fulfilled, (state, action) => {

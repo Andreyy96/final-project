@@ -10,6 +10,7 @@ import {ModalWindow} from "../ModalWindow/ModalWindow.tsx";
 import {orderActions} from "../../../store/slices/orderSlice.ts";
 import {commentValidator} from "../../../validators/commentValidator.ts";
 import {joiResolver} from "@hookform/resolvers/joi";
+import {useAppContext} from "../../../hooks/useAppContext.ts";
 
 interface IProps {
     order: IOrder
@@ -27,7 +28,10 @@ const Order: FC<IProps> = ({order, index}) => {
     const {currentUser} = useAppSelector(state => state.auth)
     const {order_tr} = useAppSelector(state => state.order)
 
+        const [, setFlag] = useAppContext();
+
     const sendComment:SubmitHandler<{comment: string}> = ({comment}) =>  {
+        setFlag(true)
         reset()
         dispatch(commentActions.postComment({dto: {body: comment}, id: order._id}))
     }

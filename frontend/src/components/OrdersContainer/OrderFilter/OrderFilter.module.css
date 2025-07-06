@@ -2,6 +2,12 @@
     width: 26px !important;
     height: 26px !important;
 }
+.main_div {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 5px;
+}
 
 .main_filter_div {
     display: flex;
@@ -42,7 +48,7 @@
 }
 
 .form_button_div button {
-    padding: 6px;
+    padding: 8.5px;
 }
 
 
