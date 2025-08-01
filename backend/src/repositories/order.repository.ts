@@ -63,6 +63,7 @@ class OrderRepository {
           pipeline: [
             { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
             { $sort: { createdAt: -1 } },
+            { $limit: 3 },
           ],
         },
       },
@@ -92,6 +93,7 @@ class OrderRepository {
             pipeline: [
               { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
               { $sort: { createdAt: -1 } },
+              { $limit: 3 },
             ],
           },
         },
@@ -108,7 +110,6 @@ class OrderRepository {
   ): Promise<[IOrder[], number, number]> {
     const sortObj = this.getSortObj(query.order);
     const page = query.page ? query.page : 1;
-
 
     const skip = 25 * (+page - 1);
 
@@ -130,6 +131,7 @@ class OrderRepository {
             pipeline: [
               { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
               { $sort: { createdAt: -1 } },
+              { $limit: 3 },
             ],
           },
         },

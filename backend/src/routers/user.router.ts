@@ -4,6 +4,7 @@ import { userController } from "../controllers/user.controller";
 import { accessMiddleware } from "../middlewares/access.middleware";
 import { authMiddleware } from "../middlewares/auth.middleware";
 import { commonMiddleware } from "../middlewares/common.middleware";
+import { userMiddleware } from "../middlewares/user.middleware";
 
 const router = Router();
 
@@ -19,6 +20,7 @@ router.patch(
   authMiddleware.checkAccessToken,
   accessMiddleware.isAdmin,
   commonMiddleware.isIdValid("userId"),
+  userMiddleware.checkActionIsNotForAdmin,
   userController.bannedManagerById,
 );
 
@@ -27,6 +29,7 @@ router.patch(
   authMiddleware.checkAccessToken,
   accessMiddleware.isAdmin,
   commonMiddleware.isIdValid("userId"),
+
   userController.unbannedManagerById,
 );
 

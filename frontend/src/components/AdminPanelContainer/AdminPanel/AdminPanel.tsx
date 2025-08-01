@@ -12,25 +12,16 @@ import {ManagerPagination} from "../ManagerPagination/ManagerPagination.tsx";
 import {CircularProgress} from "@mui/material";
 import {useAppContext} from "../../../hooks/useAppContext.ts";
 
-
 const AdminPanel = () => {
     const [isLoading, setIsLoading] = useState<boolean>(false)
     const {search} = useAppLocation()
     const {userTrigger} = useAppSelector(state => state.user)
     const {createUserTrigger} = useAppSelector(state => state.auth)
-    // const {isLoading} = useAppSelector(state => state.loading)
+
     const dispatch = useAppDispatch()
     const [flag, setFlag] = useAppContext();
 
-    ////////////////////////////////////////////
-    // const cords = ['scrollX','scrollY'];
-    // window.addEventListener('unload', e => cords.forEach(cord => localStorage[cord] = window[+cord]));
-    // window.scroll(...cords.map(cord => localStorage[cord]));
-
     useEffect(() => {
-        // dispatch(orderActions.getStatusStatistic())
-        // dispatch(userActions.getAllManagers({query: search}))
-
         const fetchData = async () => {
             if (flag) {
                 setIsLoading(false)

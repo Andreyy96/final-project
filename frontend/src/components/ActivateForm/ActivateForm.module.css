@@ -18,6 +18,37 @@ input.redBorder {
     border: 2px solid red;
 }
 
+.labelPassword {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    gap: 5px;
+    width: 250px;
+}
+
+.labelPassword svg {
+    position: absolute;
+    top: 35px;
+    right: 7px;
+}
+
+.passwordError {
+    width: 220px;
+}
+
+.labelConfirmPassword {
+    display: flex;
+    flex-direction: column;
+    position: relative;
+    gap: 5px;
+    width: 250px;
+}
+
+.labelConfirmPassword svg {
+    position: absolute;
+    top: 35px;
+    right: 7px;
+}
 
 
 

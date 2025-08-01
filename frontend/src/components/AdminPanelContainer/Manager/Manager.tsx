@@ -1,4 +1,4 @@
-import {FC} from 'react';
+import {FC, useState} from 'react';
 import {IManagerWithStatistic} from "../../../interfaces/user.interface.ts";
 import css from "./Manager.module.css"
 import {useAppDispatch} from "../../../hooks/useAppDispatch.ts";
@@ -6,12 +6,14 @@ import {userActions} from "../../../store/slices/userSlice.ts";
 import {authActions} from "../../../store/slices/authSlice.ts";
 import {UserRoleEnum} from "../../../enums/user-role.enum.ts";
 import {useAppContext} from "../../../hooks/useAppContext.ts";
+import {Alert, Snackbar} from "@mui/material";
 
 interface IProps {
     manager: IManagerWithStatistic
 }
 
 const Manager: FC<IProps> = ({manager: {user, orders}}) => {
+    const [open, setOpen] = useState<boolean>(false)
     const dispatch = useAppDispatch()
     const [, setFlag] = useAppContext();
 
@@ -26,12 +28,26 @@ const Manager: FC<IProps> = ({manager: {user, orders}}) => {
         dispatch(userActions.unbannedById({userId: user._id}))
     }
 
-    const getURLForActivate = () => {
-        dispatch(authActions.getURLForActivate({userId: user._id}))
+    const getURLForActivate = async () => {
+        const {meta: {requestStatus}} = await dispatch(authActions.getURLForActivate({userId: user._id}))
+        if (requestStatus==='fulfilled') {
+            handleClick()
+        }
     }
 
-    const getURLForRecoveryPassword = () => {
-        dispatch(authActions.getURLForRecoveryPassword({email: user.email}))
+    const getURLForRecoveryPassword = async () => {
+        const {meta: {requestStatus}} = await dispatch(authActions.getURLForRecoveryPassword({email: user.email}))
+        if (requestStatus==='fulfilled') {
+            handleClick()
+        }
+    }
+
+    const handleClick = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
     }
 
 
@@ -64,6 +80,12 @@ const Manager: FC<IProps> = ({manager: {user, orders}}) => {
                 {(user.is_banned && user.role !== UserRoleEnum.ADMIN) && <button onClick={unbanUser}>UNBAN</button>}
                 {(!user.is_banned && user.role !== UserRoleEnum.ADMIN)  &&<button onClick={banUser}>BAN</button>}
             </div>
+
+            <Snackbar open={open} autoHideDuration={6000} onClose={handleClose}>
+                <Alert onClose={handleClose} severity="success">
+                    The URL has been copied to the clipboard
+                </Alert>
+            </Snackbar>
         </div>
     );
 };

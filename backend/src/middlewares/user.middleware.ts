@@ -1,5 +1,6 @@
 import { NextFunction, Request, Response } from "express";
 
+import { UserRoleEnum } from "../enums/user-role.enum";
 import { ApiError } from "../errors/api-error";
 import { ISignIn } from "../interfaces/auth.interface";
 import { userRepository } from "../repositories/user.repository";
@@ -51,6 +52,24 @@ class UserMiddleware {
 
       if (!user.is_active) {
         throw new ApiError("Manager must activate his profile", 403);
+      }
+      next();
+    } catch (e) {
+      next(e);
+    }
+  }
+
+  public async checkActionIsNotForAdmin(
+    req: Request,
+    res: Response,
+    next: NextFunction,
+  ) {
+    try {
+      const userId = req.params.userId;
+      const user = await userRepository.getById(userId);
+
+      if (user.role === UserRoleEnum.ADMIN) {
+        throw new ApiError("Admin cannot ban himself", 400);
       }
       next();
     } catch (e) {

@@ -6,7 +6,7 @@ class GroupController {
   public async getList(req: Request, res: Response, next: NextFunction) {
     try {
       const result = await groupService.getList();
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }
@@ -17,7 +17,7 @@ class GroupController {
       const { name } = req.body as { name: string };
 
       const result = await groupService.createGroup(name);
-      res.json(result);
+      res.status(201).json(result);
     } catch (e) {
       next(e);
     }

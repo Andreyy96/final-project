@@ -16,7 +16,7 @@ class CommentController {
         jwtPayload,
         orderId,
       );
-      res.json(result);
+      res.status(201).json(result);
     } catch (e) {
       next(e);
     }

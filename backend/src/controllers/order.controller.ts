@@ -11,7 +11,7 @@ class OrderController {
       const query = req.query as unknown as IQuery;
 
       const result = await orderService.getList(query);
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }
@@ -24,7 +24,7 @@ class OrderController {
   ) {
     try {
       const result = await orderService.getStatusStatisticList();
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }
@@ -40,7 +40,7 @@ class OrderController {
         dto,
         jwtPayload,
       );
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }

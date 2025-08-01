@@ -9,7 +9,7 @@ class UserController {
       const query = req.query as unknown as IQuery;
 
       const result = await userService.getList(query);
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }
@@ -23,7 +23,7 @@ class UserController {
     try {
       const userId = req.params.userId;
       const result = await userService.bannedManagerById(userId);
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }
@@ -37,7 +37,7 @@ class UserController {
     try {
       const userId = req.params.userId;
       const result = await userService.unbannedManagerById(userId);
-      res.json(result);
+      res.status(200).json(result);
     } catch (e) {
       next(e);
     }

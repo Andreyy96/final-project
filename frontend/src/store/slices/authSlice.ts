@@ -10,7 +10,6 @@ interface IState {
     createManagerError: string
     currentUser: IUser
     createUserTrigger: boolean
-    // actionBtn: boolean
 }
 
 const initialState: IState = {
@@ -19,7 +18,6 @@ const initialState: IState = {
     createManagerError: null,
     currentUser: null,
     createUserTrigger: null,
-    // actionBtn: false
 }
 
 const login = createAsyncThunk<IUser, { user : { email: string, password: string } }>(
@@ -79,7 +77,6 @@ const getURLForRecoveryPassword = createAsyncThunk<void, { email: string }>(
     "authSlice/getURLForRecoveryPassword",
     async ({email}, thunkAPI) => {
         try {
-            console.log(email)
             const {data} = await authService.getURLForRecoveryPassword(email)
             await navigator.clipboard.writeText(data)
         }
@@ -157,12 +154,6 @@ const authSlice = createSlice({
         .addMatcher(isFulfilled(activateAccount, recoveryPassword), state => {
             state.passwordError = null
         })
-        // .addMatcher(isFulfilled(getURLForActivate, getURLForRecoveryPassword), state => {
-        //     state.actionBtn = false
-        // })
-        // .addMatcher(isPending(getURLForActivate, getURLForRecoveryPassword), state => {
-        //     state.actionBtn = true
-        // })
 })
 
 const {reducer: authReducer, actions} = authSlice
