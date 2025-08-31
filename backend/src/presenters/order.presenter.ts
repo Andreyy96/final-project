@@ -81,12 +81,6 @@ class OrderPresenter {
     };
   }
 
-  // public toListForExcelResDto(entities: IOrder[]): IOrderList {
-  //   return {
-  //     data: entities.map(this.toPublicResDto),
-  //   };
-  // }
-
   public toListForExcelResDto(entities: IOrder[]): {
     data: IGeneralInfoOrder[];
   } {

@@ -8,7 +8,6 @@ import { userRepository } from "../repositories/user.repository";
 class UserService {
   public async getList(query: IQuery): Promise<IManagerListResponse> {
     const [users, total, limit] = await userRepository.getManagerList(query);
-    // const users = await userRepository.getManagerList();
     return userPresenter.toListResDto(users, total, limit, query);
   }
 

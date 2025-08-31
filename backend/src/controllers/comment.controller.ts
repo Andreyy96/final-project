@@ -8,7 +8,6 @@ class CommentController {
   public async createComment(req: Request, res: Response, next: NextFunction) {
     try {
       const body = req.body as ICreateComment;
-      // const {id} = req.query as unknown as ICommentQuery;
       const orderId = req.params.orderId;
       const jwtPayload = req.res.locals.jwtPayload as ITokenPayload;
       const result = await commentService.createComment(

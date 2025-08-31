@@ -399,7 +399,6 @@ class OrderRepository {
     }
     if (query.start_date) {
       const date = new Date(query.start_date);
-      // const form = ((date.getMonth() > 8) ? (date.getMonth() + 1) : ('0' + (date.getMonth() + 1))) + '/' + ((date.getDate() > 9) ? date.getDate() : ('0' + date.getDate())) + '/' + date.getFullYear()
       filterObj.created_at = { $gte: date.toISOString() };
     }
     if (query.end_date) {

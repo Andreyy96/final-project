@@ -1,15 +1,12 @@
 import {createSlice, isFulfilled, isPending, isRejected} from "@reduxjs/toolkit";
 import {orderActions} from "./orderSlice.ts";
-// import {commentActions} from "./commentSlice.ts";
-// import {groupActions} from "./groupSlice.ts";
 import {authActions} from "./authSlice.ts";
-// import {userActions} from "./userSlice.ts";
+
 
 const {downloadExcel} = orderActions
-// const {postComment} = commentActions
-// const {createGroup} = groupActions
+
 const {login} = authActions
-// const {getAllManagers} = userActions
+
 
 interface IState {
     isLoading: boolean
