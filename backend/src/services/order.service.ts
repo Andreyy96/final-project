@@ -3,7 +3,6 @@ import exceljs from "exceljs";
 import { StatusEnum } from "../enums/status.enum";
 import {
   IDTOOrder,
-  IOrder,
   IOrderListResponse,
   ISingleOrder,
 } from "../interfaces/order.interface";
@@ -17,54 +16,8 @@ import { groupService } from "./group.service";
 
 class OrderService {
   public async getList(query: IQuery): Promise<IOrderListResponse> {
-    if (
-      (query.name ||
-        query.surname ||
-        query.age ||
-        query.group ||
-        query.course ||
-        query.course_format ||
-        query.course_type ||
-        query.email ||
-        query.status ||
-        query.phone ||
-        query.start_date ||
-        query.manager ||
-        query.end_date) &&
-      !query.order
-    ) {
-      const [entries, total, limit] =
-        await orderRepository.getListNoAggregation(query);
-      const orders = await this.makeOneArray(entries);
-      return orderPresenter.toListResDto(orders, total, limit, query);
-    } else if (
-      (query.name ||
-        query.surname ||
-        query.age ||
-        query.group ||
-        query.course ||
-        query.course_format ||
-        query.course_type ||
-        query.email ||
-        query.status ||
-        query.phone ||
-        query.start_date ||
-        query.manager ||
-        query.end_date) &&
-      query.order
-    ) {
-      const [entries, total, limit] =
-        await orderRepository.getSortListNoAggregation(query);
-      const orders = await this.makeOneArray(entries);
-      return orderPresenter.toListResDto(orders, total, limit, query);
-    } else if (query.order) {
-      const [entities, total, limit] =
-        await orderRepository.getListByOrder(query);
-      return orderPresenter.toListResDto(entities, total, limit, query);
-    } else {
-      const [entities, total, limit] = await orderRepository.getList(query);
-      return orderPresenter.toListResDto(entities, total, limit, query);
-    }
+    const [entities, total, limit] = await orderRepository.getList(query);
+    return orderPresenter.toListResDto(entities, total, limit, query);
   }
 
   public async getStatusStatisticList(): Promise<{
@@ -117,19 +70,7 @@ class OrderService {
   }
 
   public async getExcel(query: IQuery): Promise<exceljs.Workbook> {
-    const workbook = await excelService.getWorkbook(query);
-    return workbook;
-  }
-
-  public async makeOneArray(entities: IOrder[]): Promise<IOrder[]> {
-    const maped = await Promise.all(
-      entities.map(
-        async (order) => await orderRepository.getCommentsAndManagerInfo(order),
-      ),
-    );
-    let arrRows = [];
-    arrRows = arrRows.concat.apply(arrRows, maped);
-    return arrRows;
+    return await excelService.getWorkbook(query);
   }
 }
 

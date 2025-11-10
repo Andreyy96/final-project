@@ -110,7 +110,3 @@ export interface IOrderListResponse {
   limit: number;
   page: number;
 }
-
-export interface IOrderList {
-  data: IOrderResponse[];
-}

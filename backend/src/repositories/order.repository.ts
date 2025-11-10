@@ -13,108 +13,18 @@ import { IUser } from "../interfaces/user.interface";
 import { Order } from "../models/order.model";
 
 class OrderRepository {
-  public async getListNoAggregation(
-    query: IQuery,
-  ): Promise<[IOrder[], number, number]> {
-    const page = query.page ? query.page : 1;
-    const filterObj = this.getFilterObj(query);
-
-    const skip = 25 * (+page - 1);
-    return await Promise.all([
-      Order.find(filterObj).limit(25).skip(skip).sort({ id: -1 }),
-      Order.countDocuments(filterObj),
-      25,
-    ]);
-  }
-
-  public async getSortListNoAggregation(
-    query: IQuery,
-  ): Promise<[IOrder[], number, number]> {
-    const page = query.page ? query.page : 1;
-    const sortObj = this.getSortObj(query.order);
-    const filterObj = this.getFilterObj(query);
-
-    const skip = 25 * (+page - 1);
-    return await Promise.all([
-      Order.find(filterObj).limit(25).skip(skip).sort(sortObj),
-      Order.countDocuments(filterObj),
-      25,
-    ]);
-  }
-
-  public async getCommentsAndManagerInfo(order: IOrder): Promise<IOrder[]> {
-    return await Order.aggregate([
-      {
-        $match: { _id: order._id },
-      },
-      {
-        $lookup: {
-          from: "users",
-          let: { userId: "$_userId" },
-          as: "manager_info",
-          pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$userId"] } } }],
-        },
-      },
-      {
-        $lookup: {
-          from: "comments",
-          let: { id: "$_id" },
-          as: "comments",
-          pipeline: [
-            { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
-            { $sort: { createdAt: -1 } },
-            { $limit: 3 },
-          ],
-        },
-      },
-    ]);
-  }
-
   public async getList(query: IQuery): Promise<[IOrder[], number, number]> {
-    const page = query.page ? query.page : 1;
-
-    const skip = 25 * (+page - 1);
-
-    return await Promise.all([
-      Order.aggregate([
-        {
-          $lookup: {
-            from: "users",
-            let: { userId: "$_userId" },
-            as: "manager_info",
-            pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$userId"] } } }],
-          },
-        },
-        {
-          $lookup: {
-            from: "comments",
-            let: { id: "$_id" },
-            as: "comments",
-            pipeline: [
-              { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
-              { $sort: { createdAt: -1 } },
-              { $limit: 3 },
-            ],
-          },
-        },
-        { $sort: { id: -1 } },
-        { $skip: skip },
-      ]).limit(25),
-      Order.countDocuments(),
-      25,
-    ]);
-  }
-
-  public async getListByOrder(
-    query: IQuery,
-  ): Promise<[IOrder[], number, number]> {
+    const page = query.page ? +query.page : 1;
     const sortObj = this.getSortObj(query.order);
-    const page = query.page ? query.page : 1;
+    const filterObj = this.getFilterObj(query);
 
     const skip = 25 * (+page - 1);
 
     return await Promise.all([
       Order.aggregate([
+        {
+          $match: filterObj ? filterObj : {},
+        },
         {
           $lookup: {
             from: "users",
@@ -138,7 +48,7 @@ class OrderRepository {
         { $sort: sortObj },
         { $skip: skip },
       ]).limit(25),
-      Order.countDocuments(),
+      Order.countDocuments(filterObj ? filterObj : {}),
       25,
     ]);
   }
@@ -203,158 +113,111 @@ class OrderRepository {
     ]);
   }
 
-  public async getListForExcel(): Promise<IGeneralInfoOrder[]> {
-    return await Order.find({}).sort({ id: -1 });
-  }
-
-  public async getListForExcelByOrder(
-    query: IQuery,
-  ): Promise<[IOrder[], number, number]> {
-    const sortObj = this.getSortObj(query.order);
-
-    return await Promise.all([
-      Order.aggregate([
-        {
-          $lookup: {
-            from: "users",
-            let: { userId: "$_userId" },
-            as: "manager_info",
-            pipeline: [{ $match: { $expr: { $eq: ["$_id", "$$userId"] } } }],
-          },
-        },
-        {
-          $lookup: {
-            from: "comments",
-            let: { id: "$_id" },
-            as: "comments",
-            pipeline: [
-              { $match: { $expr: { $eq: ["$_orderId", "$$id"] } } },
-              { $sort: { createdAt: -1 } },
-            ],
-          },
-        },
-        { $sort: sortObj },
-      ]),
-      Order.countDocuments(),
-      25,
-    ]);
-  }
-
-  public async getSortListForExcel(
-    query: IQuery,
-  ): Promise<[IOrder[], number, number]> {
+  public async getListForExcel(query: IQuery): Promise<IGeneralInfoOrder[]> {
     const sortObj = this.getSortObj(query.order);
     const filterObj = this.getFilterObj(query);
 
-    return await Promise.all([
-      Order.find(filterObj).sort(sortObj),
-      Order.countDocuments(filterObj),
-      25,
-    ]);
-  }
-
-  public async getFilterListForExcel(
-    query: IQuery,
-  ): Promise<IGeneralInfoOrder[]> {
-    const filterObj = this.getFilterObj(query);
-
-    return await Order.find(filterObj).sort({ id: -1 });
+    return await Order.find(filterObj ? filterObj : {}).sort(sortObj);
   }
 
   private getSortObj(order: string): Record<string, 1 | -1> {
     let sortObj: Record<string, 1 | -1>;
 
-    switch (order) {
-      case ListOrderByEnum.ID:
-        sortObj = { id: 1 };
-        break;
-      case ListOrderByEnum._ID:
-        sortObj = { id: -1 };
-        break;
-      case ListOrderByEnum.NAME:
-        sortObj = { name: 1, id: 1 };
-        break;
-      case ListOrderByEnum._NAME:
-        sortObj = { name: -1, id: 1 };
-        break;
-      case ListOrderByEnum.SURNAME:
-        sortObj = { surname: 1, id: 1 };
-        break;
-      case ListOrderByEnum._SURNAME:
-        sortObj = { surname: -1, id: 1 };
-        break;
-      case ListOrderByEnum.EMAIL:
-        sortObj = { email: 1, id: 1 };
-        break;
-      case ListOrderByEnum._EMAIL:
-        sortObj = { email: -1, id: 1 };
-        break;
-      case ListOrderByEnum.PHONE:
-        sortObj = { phone: 1, id: 1 };
-        break;
-      case ListOrderByEnum._PHONE:
-        sortObj = { phone: -1, id: 1 };
-        break;
-      case ListOrderByEnum.AGE:
-        sortObj = { age: 1, id: 1 };
-        break;
-      case ListOrderByEnum._AGE:
-        sortObj = { age: -1, id: 1 };
-        break;
-      case ListOrderByEnum.COURSE:
-        sortObj = { course: 1, id: 1 };
-        break;
-      case ListOrderByEnum._COURSE:
-        sortObj = { course: -1, id: 1 };
-        break;
-      case ListOrderByEnum.COURSE_FORMAT:
-        sortObj = { course_format: 1, id: 1 };
-        break;
-      case ListOrderByEnum._COURSE_FORMAT:
-        sortObj = { course_format: -1, id: 1 };
-        break;
-      case ListOrderByEnum.COURSE_TYPE:
-        sortObj = { course_type: 1, id: 1 };
-        break;
-      case ListOrderByEnum._COURSE_TYPE:
-        sortObj = { course_type: -1, id: 1 };
-        break;
-      case ListOrderByEnum.SUM:
-        sortObj = { sum: 1, id: 1 };
-        break;
-      case ListOrderByEnum._SUM:
-        sortObj = { sum: -1, id: 1 };
-        break;
-      case ListOrderByEnum.ALREADY_PAID:
-        sortObj = { already_paid: 1, id: 1 };
-        break;
-      case ListOrderByEnum._ALREADY_PAID:
-        sortObj = { already_paid: -1, id: 1 };
-        break;
-      case ListOrderByEnum.CREATED_AT:
-        sortObj = { created_at: 1, id: 1 };
-        break;
-      case ListOrderByEnum._CREATED_AT:
-        sortObj = { created_at: -1, id: 1 };
-        break;
-      case ListOrderByEnum.GROUP:
-        sortObj = { group: 1, id: 1 };
-        break;
-      case ListOrderByEnum._GROUP:
-        sortObj = { group: -1, id: 1 };
-        break;
-      case ListOrderByEnum.STATUS:
-        sortObj = { status: 1, id: 1 };
-        break;
-      case ListOrderByEnum._STATUS:
-        sortObj = { status: -1, id: 1 };
-        break;
-      case ListOrderByEnum.MANAGER:
-        sortObj = { manager: 1, id: 1 };
-        break;
-      case ListOrderByEnum._MANAGER:
-        sortObj = { manager: -1, id: 1 };
-        break;
+    if (order) {
+      switch (order) {
+        case ListOrderByEnum.ID:
+          sortObj = { id: 1 };
+          break;
+        case ListOrderByEnum._ID:
+          sortObj = { id: -1 };
+          break;
+        case ListOrderByEnum.NAME:
+          sortObj = { name: 1, id: 1 };
+          break;
+        case ListOrderByEnum._NAME:
+          sortObj = { name: -1, id: 1 };
+          break;
+        case ListOrderByEnum.SURNAME:
+          sortObj = { surname: 1, id: 1 };
+          break;
+        case ListOrderByEnum._SURNAME:
+          sortObj = { surname: -1, id: 1 };
+          break;
+        case ListOrderByEnum.EMAIL:
+          sortObj = { email: 1, id: 1 };
+          break;
+        case ListOrderByEnum._EMAIL:
+          sortObj = { email: -1, id: 1 };
+          break;
+        case ListOrderByEnum.PHONE:
+          sortObj = { phone: 1, id: 1 };
+          break;
+        case ListOrderByEnum._PHONE:
+          sortObj = { phone: -1, id: 1 };
+          break;
+        case ListOrderByEnum.AGE:
+          sortObj = { age: 1, id: 1 };
+          break;
+        case ListOrderByEnum._AGE:
+          sortObj = { age: -1, id: 1 };
+          break;
+        case ListOrderByEnum.COURSE:
+          sortObj = { course: 1, id: 1 };
+          break;
+        case ListOrderByEnum._COURSE:
+          sortObj = { course: -1, id: 1 };
+          break;
+        case ListOrderByEnum.COURSE_FORMAT:
+          sortObj = { course_format: 1, id: 1 };
+          break;
+        case ListOrderByEnum._COURSE_FORMAT:
+          sortObj = { course_format: -1, id: 1 };
+          break;
+        case ListOrderByEnum.COURSE_TYPE:
+          sortObj = { course_type: 1, id: 1 };
+          break;
+        case ListOrderByEnum._COURSE_TYPE:
+          sortObj = { course_type: -1, id: 1 };
+          break;
+        case ListOrderByEnum.SUM:
+          sortObj = { sum: 1, id: 1 };
+          break;
+        case ListOrderByEnum._SUM:
+          sortObj = { sum: -1, id: 1 };
+          break;
+        case ListOrderByEnum.ALREADY_PAID:
+          sortObj = { already_paid: 1, id: 1 };
+          break;
+        case ListOrderByEnum._ALREADY_PAID:
+          sortObj = { already_paid: -1, id: 1 };
+          break;
+        case ListOrderByEnum.CREATED_AT:
+          sortObj = { created_at: 1, id: 1 };
+          break;
+        case ListOrderByEnum._CREATED_AT:
+          sortObj = { created_at: -1, id: 1 };
+          break;
+        case ListOrderByEnum.GROUP:
+          sortObj = { group: 1, id: 1 };
+          break;
+        case ListOrderByEnum._GROUP:
+          sortObj = { group: -1, id: 1 };
+          break;
+        case ListOrderByEnum.STATUS:
+          sortObj = { status: 1, id: 1 };
+          break;
+        case ListOrderByEnum._STATUS:
+          sortObj = { status: -1, id: 1 };
+          break;
+        case ListOrderByEnum.MANAGER:
+          sortObj = { manager: 1, id: 1 };
+          break;
+        case ListOrderByEnum._MANAGER:
+          sortObj = { manager: -1, id: 1 };
+          break;
+      }
+    } else {
+      sortObj = { id: -1 };
     }
 
     return sortObj;
